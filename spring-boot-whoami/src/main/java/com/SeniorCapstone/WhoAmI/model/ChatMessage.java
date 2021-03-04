@@ -1,33 +1,36 @@
-package com.SeniorCapstone.WhoAmI.model; 
+package com.SeniorCapstone.WhoAmI.model;
 
 public class ChatMessage {
-    private MessageType type;
-    private String content;
-    private String sender;
 
+  public enum MessageType {
+    CHAT, JOIN, LEAVE
+  }
 
+  private MessageType messageType;
+  private String content;
+  private String sender;
 
-    public MessageType getType() {
-        return type;
-    }
+  public MessageType getType() {
+    return messageType;
+  }
 
-    public void setType(MessageType type) {
-        this.type = type;
-    }
+  public void setType(MessageType messageType) {
+    this.messageType = messageType;
+  }
 
-    public String getContent() {
-        return content;
-    }
+  public String getContent() {
+    return content;
+  }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+  public void setContent(String content) {
+    this.content = content;
+  }
 
-    public String getSender() {
-        return sender;
-    }
+  public String getSender() {
+    return sender;
+  }
 
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
+  public void setSender(String sender) {
+    this.sender = sender;
+  }
 }

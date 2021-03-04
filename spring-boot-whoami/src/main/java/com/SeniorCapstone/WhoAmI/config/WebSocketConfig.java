@@ -1,10 +1,4 @@
-//Almicke Navarro 
-//CST-323
-//February 23, 2020 
-//I used the source code from the following website: https://github.com/kkedzierskim/chat-app 
-
 package com.SeniorCapstone.WhoAmI.config;
-
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -12,20 +6,27 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import com.SeniorCapstone.WhoAmI.xml.XmlConfigurationParser;
+
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").withSockJS();
-    }
+  XmlConfigurationParser xmlConfig = new XmlConfigurationParser("src/main/resources/webSocketConfiguration.xml");
 
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic");
-        registry.setApplicationDestinationPrefixes("/app");
-    }
+  public WebSocketConfig() throws Exception {
 
+  }
 
+  @Override
+  public void registerStompEndpoints(StompEndpointRegistry registry) {
+    registry.addEndpoint(xmlConfig.getStompEndPointPath()).withSockJS();
+
+  }
+
+  @Override
+  public void configureMessageBroker(MessageBrokerRegistry registry) {
+    registry.setApplicationDestinationPrefixes( xmlConfig.getMessageBrokerApplicationDestinationPrefix());
+    registry.enableSimpleBroker(xmlConfig.getSimpleBrokerPrefixs().get(0), xmlConfig.getSimpleBrokerPrefixs().get(1));
+  }
 }
