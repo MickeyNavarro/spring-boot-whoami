@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Join Game</title>
+    <link href="/webjars/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.css" rel="stylesheet">
+    <script src="webjars/jquery/3.1.0/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/webjars/js-cookie/js.cookie.js"></script>
+    <script src="/js/app.js"></script>
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div id="stage1" >
+
+        <div class="row align-items-center">
+            <div class="col-sm-4 col-xs-2"></div>
+            <div class="col-sm-4 col-xs-8  align-self-center">
+                <div class="sendName">
+                    <h1 class="title">Enter a username and room ID</h1>
+                    <form id="usernameForm" name="usernameForm">
+                        <div class="form-group">
+                            <input type="text" id="name"  class="form-control"  placeholder="Username"  required/>
+
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="room-id" class="form-control"    placeholder="Room ID" required />
+
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="join" class="accent username-submit">JOIN</button>
+                        </div>
+                    </form>
+                    
+                    <h2>Create Game</h2>
+					<form method="POST" th:object="gameBoard" action="createGame-uploadImages">
+						<h4>Choose the size of your game board</h4>
+							<select name="size" id="size">
+							  <option value="3">Easy (3 x 3)</option>
+							  <option value="4">Medium (4 x 4)</option>
+							  <option value="5">Hard (5 x 5)</option>
+							</select>
+						<input class="formButton createButton" type="submit" value="Next">
+					</form>
+                </div>
+            </div>
+            <div class="col-sm-4 col-xs-2"></div>
+        </div>
+
+</div>
+<div id="stage2">
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-md-8 ">
+            <div class="card-my ">
+
+                <div class="container-chat  ">
+                    <h2>Create Game</h2>
+						<form method="POST" th:object="gameBundle" action="createGame-enterUsername" enctype="multipart/form-data">
+							<h4>Upload your images</h4>
+							<table class="table">
+								<tr>
+									<th><label>Image #</label></th>
+									<th><label>Details</label></th>
+								</tr>
+								<th:block th:each="image : ${gameBundle.images}">
+									<tr>
+										<td><th:text= "${image.ID}"/></td>
+										<td>Name of Person:<input type="text" name="name" value = "${image.name}"><font color= "red"><form:errors name="name"/></font>
+											<br/>
+											File:<input type="file" name="file" value = "${image.multipartFile}" accept="image/png, image/jpeg"  /><font color= "red"><form:errors name="file"/></font>
+										</td>
+									</tr>
+								</th:block>
+							</table>
+							<input class="formButton createButton" type="submit" value="Next">
+						</form>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-my">
+                <div class="container-chat ">
+                    <div class="chat-header">
+                        <h2>Room [<span id="room-id-display"></span>]</h2>
+                    </div>
+                    <div class="connecting">
+                        Connecting...
+                    </div>
+                    <ul id="messageArea">
+
+                    </ul>
+                    <form id="messageForm" name="messageForm" nameForm="messageForm">
+                        <div class="form-group">
+                            <div class="input-group clearfix">
+                                <input type="text" id="message" placeholder="Type a message... or /join [room-id] to join another room."
+                                       autocomplete="off" class="form-control"/>
+                                <button type="submit" id="send" class="primary inline">Send</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id="create1"  >
+
+        <div class="row align-items-center">
+            <div class="col-sm-4 col-xs-2"></div>
+            <div class="col-sm-4 col-xs-8  align-self-center">
+                <div class="sendName">
+                    <h1 class="title">Enter a username and room ID</h1>
+                    <form id="usernameForm" name="usernameForm">
+                        <div class="form-group">
+                            <input type="text" id="name"  class="form-control"  placeholder="Username"  required/>
+
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="room-id" class="form-control"    placeholder="Room ID" required />
+
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="join" class="accent username-submit">JOIN</button>
+                        </div>
+                    </form>
+                    
+                    <h2>Create Game</h2>
+					<form method="POST" th:object="gameBoard" action="createGame-uploadImages">
+						<h4>Choose the size of your game board</h4>
+							<select name="size" id="size">
+							  <option value="3">Easy (3 x 3)</option>
+							  <option value="4">Medium (4 x 4)</option>
+							  <option value="5">Hard (5 x 5)</option>
+							</select>
+						<input class="formButton createButton" type="submit" value="Next">
+					</form>
+                </div>
+            </div>
+            <div class="col-sm-4 col-xs-2"></div>
+        </div>
+
+</div>
+</body>
+</html>

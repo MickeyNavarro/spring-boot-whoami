@@ -329,3 +329,45 @@ p {
     padding-left: 68px;
     position: relative;
 }
+a.button, .button {
+  border: none;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 30px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+  margin-bottom:5px;
+  margin-top:5px;
+}
+
+.formButton {
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 15px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+  margin-bottom:5px;
+  margin-top:5px;
+}
+
+a.createButton, .createButton { 
+	background-color: #04be14; 
+}
+
+a.joinButton, .joinButton { 
+	background-color: #007bff; 
+}
+
+img {
+  vertical-align: middle;
+  border-style: none;
+  margin-bottom:5px;
+  margin-top:5px;
+}

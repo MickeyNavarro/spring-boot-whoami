@@ -498,19 +498,19 @@ function onGameMessageReceived(payload) {
         restart();
     }
     if(gameMessage.bomber && bomber){
-        showNotification(gameMessage.bomber + ": is THE BOMBER!")
+        showNotification(gameMessage.bomber + " is Player 1!")
         bomber = false;
 
         $( "#BOMBER" ).hide();
     }
     if(gameMessage.saper && saper){
-        showNotification(gameMessage.saper + ": is THE SAPER!")
+        showNotification(gameMessage.saper + " is Player 2!")
         $( "#SAPER" ).hide();
         saper = false;
     }
     if(gameMessage.state == 'DEPLOYING'){
         if(DeployingFirstTime)
-        showNotification(gameMessage.bomber + ": is DEPLOYING!")
+        showNotification(gameMessage.bomber + " is DEPLOYING!")
         DeployingFirstTime=false;
         currentState = States.DEPLOYING;
         $("#COMMIT").attr("class","primary inline");
@@ -523,7 +523,7 @@ function onGameMessageReceived(payload) {
         if(gameMessage.flagCounter!=null)
         $("#licznikFlag").text(gameMessage.flagCounter);
     }if(gameMessage.state == 'DEFUSING' && defusing){
-        showNotification(gameMessage.saper + ": is DEFUSING!")
+        showNotification(gameMessage.saper + " is DEFUSING!")
         if(!czasUplywa){
             uruchomCzas();
         }
@@ -539,10 +539,10 @@ function onGameMessageReceived(payload) {
             removeListeners();
         }
         defusing = false;
-        //tutaj jakis przycisk restartu i jakis warunek ze jak saper oddejdzie to trzeba restartowac
+        //here some restart button and some condition that when the sapper goes away, you have to restart
         boombsCounter = gameMessage.board.fields.length;
         $("#licznikFlag").text(boombsCounter);
-        //to moze sie wykonac tylko raz
+        //this can only be done once
         setBoard(gameMessage.board.fields)
     }if(  gameMessage.state == 'DEFUSING' && myRole != Roles.SAPER){
         if(!czasUplywa){
