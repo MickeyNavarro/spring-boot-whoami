@@ -5,7 +5,6 @@
 }
 html,body {
     height: 100%;
-    overflow: hidden;
 }
 body{
 
@@ -160,14 +159,10 @@ button.accent {
 }
 .card-my {
 
-    min-height: 630px;
     /* Add shadows to create the "card" effect */
     box-shadow: 0 1px 11px 0 rgba(0,0,0,0.27);
     transition: 0.3s;
     background-color: #FFF;
-
-
-    max-height: 630px;
     position: relative;
 }
 .form-control{
@@ -177,7 +172,7 @@ button.accent {
     border: 1px solid
     #c8c8c8;
 }
-.sendName {
+.contiainer {
     text-align: center;
     padding: 35px 55px 35px;
     min-height: 250px;
@@ -330,17 +325,16 @@ p {
     position: relative;
 }
 a.button, .button {
-  border: none;
-  color: white;
-  padding: 20px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 30px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 12px;
-  margin-bottom:5px;
-  margin-top:5px;
+    font-size: 18px;
+    min-height: 40px;
+    padding: 1rem 3rem;
+    background-color: rgb(245 90 85);
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
+    color: #fff;
+    text-align: center;
+    border-radius: 12px;
+    cursor: pointer;
+ 
 }
 
 .formButton {
@@ -370,4 +364,71 @@ img {
   border-style: none;
   margin-bottom:5px;
   margin-top:5px;
+}
+
+img.header-photo {
+    margin: auto;
+    padding-right: 90px;
+    padding-left: 90px;
+}
+
+.center, 
+.middle {
+  margin: auto;
+  padding: 10px;
+  margin-bottom:10px;
+  margin-top:10px;
+}
+
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.memory-game {
+  width: 450px;
+  height: 450px;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  perspective: 1000px;
+}
+
+.memory-card {
+  width: calc(25% - 10px);
+  height: calc(33.333% - 10px);
+  margin: 5px;
+  position: relative;
+  transform: scale(1);
+  transform-style: preserve-3d;
+  transition: transform .5s;
+}
+
+.memory-card:active {
+  transform: scale(0.97);
+  transition: transform .2s;
+}
+
+.memory-card.flip {
+  transform: rotateY(180deg);
+}
+
+.front-face,
+.back-face {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 5px;
+  background: rgb(250, 207, 57);
+  backface-visibility: hidden;
+}
+
+.back-face {
+  transform: rotateY(180deg);
+}
+
+.front-face {
+	padding: 10px;
 }
