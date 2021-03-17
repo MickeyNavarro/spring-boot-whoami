@@ -21,12 +21,14 @@
         <div class="row align-items-center">
             <div class="col-sm-3 col-xs-2"></div>
             <div class="col-sm-6 col-xs-8  align-self-center">
-            	<div class="sendName">                    
+            	<div class="contiainer">                    
                     <img th:src="@{/images/HeaderPhoto.png}"/>
-			       	<br/><br/><br/><br/> <!-- temp to avoid overlapping -->
-			        <a href="create" class="button createButton">Create Game</a>
-			       	<br/><br/><br/> <!-- temp to avoid overlapping -->
-			        <a href="join" class="button joinButton">Join Game</a>
+			       	<div class="form-group">
+			        	<a href="create" class="button">Create Game</a>
+			        </div>
+			       	<div class="form-group">
+			        	<a href="join" class="button">Join Game</a>
+                    </div>
             </div>
             <div class="col-sm-3 col-xs-2"></div>
         </div>
