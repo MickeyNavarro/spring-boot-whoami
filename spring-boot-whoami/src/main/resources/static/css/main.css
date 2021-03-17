@@ -396,7 +396,7 @@ img.header-photo {
   perspective: 1000px;
 }
 
-.memory-card {
+.playing-card {
   width: calc(25% - 10px);
   height: calc(33.333% - 10px);
   margin: 5px;
@@ -406,12 +406,12 @@ img.header-photo {
   transition: transform .5s;
 }
 
-.memory-card:active {
+.playing-card:active {
   transform: scale(0.97);
   transition: transform .2s;
 }
 
-.memory-card.flip {
+.playing-card.flip {
   transform: rotateY(180deg);
 }
 

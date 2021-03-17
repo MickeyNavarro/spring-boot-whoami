@@ -1,9 +1,11 @@
-const cards = document.querySelectorAll('.memory-card');
+const cards = document.querySelectorAll('.playing-card');
 
 let hasFlippedCard = false;
 let lockBoard = false;
 let firstCard, secondCard;
 
+//add the click functionality to each card
+cards.forEach(card => card.addEventListener('click', flipCard));
 
 //method to flip a card from its front face to its back face
 function flipCard() {
@@ -20,16 +22,6 @@ function flipCard() {
     return;
   }
 
-  // second click
-  secondCard = this;
-
-  checkForMatch();
-}
-
-function checkForMatch() {
-  let isMatch = firstCard.dataset.framework === secondCard.dataset.framework;
-
-  isMatch ? disableCards() : unflipCards();
 }
 
 function disableCards() {
@@ -62,4 +54,3 @@ function resetBoard() {
   });
 })();
 
-cards.forEach(card => card.addEventListener('click', flipCard));
