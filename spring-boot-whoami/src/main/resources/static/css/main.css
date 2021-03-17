@@ -220,7 +220,7 @@ button.accent {
     overflow-y: scroll;
     padding: 0 20px 0px 0px;
     padding-bottom: 10px;
-    height: 480px;
+    height: 400px;
 }
 .chat-header h2 {
     margin: 0;
@@ -388,22 +388,35 @@ img.header-photo {
 }
 
 .memory-game {
-  width: 450px;
-  height: 450px;
+  width: 400px;
+  height: 400px;
   margin: auto;
   display: flex;
   flex-wrap: wrap;
   perspective: 1000px;
+  overflow: auto;
+  overflow-y: scroll;
 }
 
 .playing-card {
-  width: calc(25% - 10px);
   height: calc(33.333% - 10px);
   margin: 5px;
   position: relative;
   transform: scale(1);
   transform-style: preserve-3d;
   transition: transform .5s;
+}
+
+.size3x3 { 
+	width: calc(27.5% - 10px);
+}
+
+.size4x3 { 
+	width: calc(25% - 10px);
+}
+
+.size5x3 { 
+    width: calc(20% - 10px);
 }
 
 .playing-card:active {
@@ -413,6 +426,13 @@ img.header-photo {
 
 .playing-card.flip {
   transform: rotateY(180deg);
+}
+
+.chosen-playing-card { 
+	width: 100px;
+    height: 125px;
+    margin: 5px;
+    position: relative;
 }
 
 .front-face,
