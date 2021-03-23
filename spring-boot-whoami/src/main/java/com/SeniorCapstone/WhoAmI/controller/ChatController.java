@@ -59,8 +59,7 @@ public class ChatController {
     return (gameState.getState() == GameState.State.DEPLOYING &&
             gameState.getBomber().equals(username) ||
             gameState.getSaper().equals(username) ||
-            ((gameState.getState() == GameState.State.DEFUSING ||
-                    gameState.getState() == GameState.State.LOST ||
+            ((gameState.getState() == GameState.State.LOST ||
                     gameState.getState() == GameState.State.WIN)
                     && gameState.getSaper().equals(username)) ||
             ( gameState.getState() == GameState.State.WAITING_FOR_PLAYERS

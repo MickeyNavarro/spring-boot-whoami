@@ -11,7 +11,6 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
 import com.SeniorCapstone.WhoAmI.model.Board;
-import com.SeniorCapstone.WhoAmI.model.FlagCounterMessage;
 import com.SeniorCapstone.WhoAmI.model.GameState;
 import com.SeniorCapstone.WhoAmI.model.IfWinMessage;
 import com.SeniorCapstone.WhoAmI.model.RestartMessage;
@@ -67,7 +66,6 @@ public class GameController {
         GameState gameState = GamesState.get(roomId);
 
         gameState.setBoard(board);//tu ustawia bomby
-        gameState.setState(GameState.State.DEFUSING);
         messagingTemplate.convertAndSend(format("/game/%s", roomId), gameState);
     }
     @MessageMapping("/game/{roomId}/sendMove")
@@ -77,9 +75,8 @@ public class GameController {
         messagingTemplate.convertAndSend(format("/game/%s", roomId), gameState);
     }
     @MessageMapping("/game/{roomId}/sendFlagCounter")
-    public void sendFlagCounter(@DestinationVariable String roomId, @Payload FlagCounterMessage flagCounter) {
+    public void sendFlagCounter(@DestinationVariable String roomId) {
         GameState gameState = GamesState.get(roomId);
-        gameState.setFlagCounter(flagCounter.getFlagCounter());//tu ustawia to co widzi
         messagingTemplate.convertAndSend(format("/game/%s", roomId), gameState);
     }
     @MessageMapping("/game/{roomId}/sendState")

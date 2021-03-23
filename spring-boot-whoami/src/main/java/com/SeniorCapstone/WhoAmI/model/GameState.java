@@ -4,7 +4,6 @@ public class GameState {
     public enum State {
         WAITING_FOR_PLAYERS,
         DEPLOYING,
-        DEFUSING,
         LOST,WIN;
     }
 
@@ -13,15 +12,6 @@ public class GameState {
     Board visibleBoard;
     String bomber = "";
     String saper =  "";
-    Integer flagCounter;
-
-    public Integer getFlagCounter() {
-        return flagCounter;
-    }
-
-    public void setFlagCounter(Integer flagCounter) {
-        this.flagCounter = flagCounter;
-    }
 
     public Board getVisibleBoard() {
         return visibleBoard;
