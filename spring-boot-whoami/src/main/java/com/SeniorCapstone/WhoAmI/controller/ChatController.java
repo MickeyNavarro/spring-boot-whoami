@@ -57,13 +57,13 @@ public class ChatController {
   }
   private boolean ifPlayerHaveAnImportantRoleInCurrentState(GameState gameState, String username){
     return (gameState.getState() == GameState.State.DEPLOYING &&
-            gameState.getBomber().equals(username) ||
-            gameState.getSaper().equals(username) ||
+            gameState.getPlayer1().equals(username) ||
+            gameState.getPlayer2().equals(username) ||
             ((gameState.getState() == GameState.State.LOST ||
                     gameState.getState() == GameState.State.WIN)
-                    && gameState.getSaper().equals(username)) ||
+                    && gameState.getPlayer2().equals(username)) ||
             ( gameState.getState() == GameState.State.WAITING_FOR_PLAYERS
-                    && (gameState.getBomber().equals(username) || gameState.getSaper().equals(username))));
+                    && (gameState.getPlayer1().equals(username) || gameState.getPlayer2().equals(username))));
   }
   private void resetTheGameIfNeeded(String username,String currentRoomId){
     GameState gameState =  GameController.GamesState.get(currentRoomId);

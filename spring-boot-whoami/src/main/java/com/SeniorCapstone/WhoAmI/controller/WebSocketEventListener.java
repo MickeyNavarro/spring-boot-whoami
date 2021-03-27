@@ -50,12 +50,12 @@ public class WebSocketEventListener {
     RestartMessage restartMessage = new RestartMessage();
     restartMessage.setRestart(true);
     if(gameState.getState() == GameState.State.DEPLOYING &&
-            gameState.getBomber().equals(username) ||
+            gameState.getPlayer1().equals(username) ||
             ((gameState.getState() == GameState.State.LOST ||
                     gameState.getState() == GameState.State.WIN)
-                    && gameState.getSaper().equals(username)) ||
+                    && gameState.getPlayer2().equals(username)) ||
             ( gameState.getState() == GameState.State.WAITING_FOR_PLAYERS
-                    && (gameState.getBomber().equals(username) || gameState.getSaper().equals(username)))){
+                    && (gameState.getPlayer1().equals(username) || gameState.getPlayer2().equals(username)))){
       GameController.GamesState.remove(roomId);
       messagingTemplate.convertAndSend(format("/game/%s", roomId), restartMessage);
     }

@@ -8,6 +8,8 @@ var roomId = null;
 var topic = null;
 var gameTopic = null;
 
+var size = null; 
+
 //differest states of the game
 var States = {
     WAITING: 1,
@@ -17,22 +19,21 @@ var States = {
 //different roles
 var Roles = {
     OBSERVER : 1,
-    BOMBER: 2,
-    SAPER: 3,
+    PLAYER1 : 2,
+    PLAYER2 : 3,
 
 };
 //game
 var sekundy = 0;
 var czasUplywa = false;
-var saper = true;
-var bomber = true;
+var player2 = true;
+var player1 = true;
 var iknowBro = true;
 var DeployingFirstTime = true;
 var odkryto = {};
 var myRole = Roles.OBSERVER;
 var currentState = States.WAITING;
 var boardSize = 18;
-var boombsCounter = 0;
 var flagCounter = 0;
 var boardBombs = [];
 var iloscOdkrytychPol = 0;
@@ -49,14 +50,13 @@ function initRestart(){
 }
 function restart(){
     //restart client
-    saper = true;
-    bomber = true;
+    player2 = true;
+    player1 = true;
     iknowBro = true;
     DeployingFirstTime = true;
     odkryto = {};
     myRole = Roles.OBSERVER;
     currentState = States.WAITING;
-    boombsCounter = 0;
     flagCounter = 0;
     boardBombs = [];
     iloscOdkrytychPol = 0;
@@ -67,16 +67,15 @@ function restart(){
     clearBoard();
     initBoard();
     $("#RESTART").hide();
-    $("#BOMBER").show();
-    $("#BOMBER").prop("disabled",false);
-    $("#SAPER").show();
-    $("#SAPER").prop("disabled",false);
+    $("#PLAYER1").show();
+    $("#PLAYER1").prop("disabled",false);
+    $("#PLAYER2").show();
+    $("#PLAYER2").prop("disabled",false);
     $("#COMMIT").hide();
 }
 
 function initBoard(){
 
-    $("#licznikFlag").html(boombsCounter);
 }
 
 function sendLost(){
@@ -99,12 +98,36 @@ var colors = [
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
 ];
 
+function setSize(){
+
+	//check if variables are empty
+    if( $('#size').val() == "")
+    {
+        preventDefault();
+    }
+    
+    //trim white space
+    size = $("#size").val().trim();
+    
+    //check if size is not null
+    if (size) {
+        $("#stage1").hide();
+        $("#stage2").attr("class","");
+
+    }
+}
 function connect(){
+
+	//check if the room id or name variables are empty
     if( $('#room-id').val() == "" ||  $('#name').val() == "" )
     {
         preventDefault();
     }
+    
+    //trim white space
     username = $("#name").val().trim();
+    
+    //check if username is not null
     if (username) {
         $("#stage1").hide();
         $("#stage2").attr("class","");
@@ -144,15 +167,15 @@ function enterRoom(newRoomId) {
     stompClient.send(`${gameTopic}/joinToTheGame`, {}, JSON.stringify({sender: username, type: 'JOIN'}));
 }
 //do poprawienia wszyyyystko
-function sendBOMBERRole() {
-    sendRole("BOMBER");
-    $("#SAPER").prop("disabled",true);
-    myRole = Roles.BOMBER;
+function sendPLAYER1Role() {
+    sendRole("PLAYER1");
+    $("#PLAYER2").prop("disabled",true);
+    myRole = Roles.PLAYER1;
 }
-function sendSAPERRole() {
-    sendRole("SAPER");
-    $("#BOMBER").prop("disabled",true);
-    myRole = Roles.SAPER;
+function sendPLAYER2Role() {
+    sendRole("PLAYER2");
+    $("#PLAYER1").prop("disabled",true);
+    myRole = Roles.PLAYER2;
 }
 function sendRole(roleToSend) {
     if (roleToSend && stompClient) {
@@ -191,26 +214,26 @@ function onGameMessageReceived(payload) {
         showNotification("RESTART!");
         restart();
     }
-    if(gameMessage.bomber && bomber){
-        showNotification(gameMessage.bomber + " is Player 1!")
-        bomber = false;
+    if(gameMessage.player1 && player1){
+        showNotification(gameMessage.player1 + " is Player 1!")
+        player1 = false;
 
-        $( "#BOMBER" ).hide();
+        $( "#PLAYER1" ).hide();
     }
-    if(gameMessage.saper && saper){
-        showNotification(gameMessage.saper + " is Player 2!")
-        $( "#SAPER" ).hide();
-        saper = false;
+    if(gameMessage.player2 && player2){
+        showNotification(gameMessage.player2 + " is Player 2!")
+        $( "#PLAYER2" ).hide();
+        player2 = false;
     }
     if(gameMessage.state == 'DEPLOYING'){
         if(DeployingFirstTime)
-        showNotification(gameMessage.bomber + " is DEPLOYING!")
+        showNotification(gameMessage.player1 + " is DEPLOYING!")
         DeployingFirstTime=false;
         currentState = States.DEPLOYING;
         $("#COMMIT").attr("class","primary inline");
         $("#COMMIT").prop("disabled",false);
         $("#COMMIT").show();
-        if(myRole != Roles.BOMBER)
+        if(myRole != Roles.PLAYER1)
             $("#COMMIT").hide();
         else
             addListeners();
@@ -219,13 +242,13 @@ function onGameMessageReceived(payload) {
     }if(gameMessage.state == "LOST" && iknowBro){
 
         iknowBro = false;
-        showNotification(gameMessage.saper+": LOST!");
+        showNotification(gameMessage.player2+": LOST!");
 
         $("#licznikFlag").text(gameMessage.flagCounter);
     }if(gameMessage.state == "WIN" && iknowBro){
 
         iknowBro = false;
-        showNotification(gameMessage.saper+": WIN!");
+        showNotification(gameMessage.player2+": WIN!");
         $("#licznikFlag").text(gameMessage.flagCounter);
     }
     if( gameMessage.visibleBoard.fields)setBoardView(gameMessage.visibleBoard.fields);
@@ -309,9 +332,10 @@ $(function () {
     $("form").on('submit', function (e) {
         e.preventDefault();
     });
+    $( "#create-size" ).click(function() { setSize(); });
     $( "#join" ).click(function() { connect(); });
     $("#send").click(function () {  sendMessage()});
-    $( "#BOMBER" ).click(function() { sendBOMBERRole(); });
-    $("#SAPER").click(function () {  sendSAPERRole()});
+    $( "#PLAYER1" ).click(function() { sendPLAYER1Role(); });
+    $("#PLAYER2").click(function () {  sendPLAYER2Role()});
     $("#RESTART").click(function () { initRestart()});
 });

@@ -2,7 +2,7 @@ package com.SeniorCapstone.WhoAmI.model;
 
 public class RoleMessage {
     public enum Role {
-        OBSERVER, BOMBER, SAPER;
+        OBSERVER, PLAYER1, PLAYER2;
     }
     private Role role;
     private String sender;
