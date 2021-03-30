@@ -157,6 +157,14 @@ button.accent {
 #stage1{
     padding-top: 150px;
 }
+
+#create1, 
+#create2, 
+#create3, 
+#join1, 
+#home {
+    padding-top: 150px;
+}
 .card-my {
 
     /* Add shadows to create the "card" effect */
@@ -212,7 +220,7 @@ button.accent {
     padding: 15px;
     border-bottom: 2px solid #f0f0f0;
 }
-#stage2 ul {
+#join2 ul {
     list-style-type: none;
     background-color: #FFF;
     margin: 0;
@@ -268,7 +276,7 @@ body{
     height: 38px;
     margin-left: 5px;
 }
-#stage2 .chat-message i {
+#join2 .chat-message i {
     position: absolute;
     width: 42px;
     height: 42px;
@@ -284,28 +292,28 @@ body{
     font-style: normal;
     text-transform: uppercase;
 }
-#stage2 .event-message p {
+#join2 .event-message p {
     color: #777;
     font-size: 14px;
     word-wrap: break-word;
 }
-#stage2 .chat-message p {
+#join2 .chat-message p {
     color: #43464b;
 }
-#stage2 ul li {
+#join2 ul li {
     margin: 0;
 }
-#stage2 ul li {
+#join2 ul li {
     line-height: 1.5rem;
     padding: 10px 20px;
     margin: 0;
     border-bottom: 1px solid #f4f4f4;
 }
-#stage2 .chat-message span {
+#join2 .chat-message span {
     color: #333;
     font-weight: 600;
 }
-#stage2 .event-message {
+#join2 .event-message {
     width: 100%;
     text-align: center;
     clear: both;
@@ -317,10 +325,10 @@ p {
     margin-bottom: 0px;
     margin-left: 0px;
 }
-#stage2 .chat-message p {
+#join2 .chat-message p {
     color: #43464b;
 }
-#stage2 .chat-message {
+#join2 .chat-message {
     padding-left: 68px;
     position: relative;
 }

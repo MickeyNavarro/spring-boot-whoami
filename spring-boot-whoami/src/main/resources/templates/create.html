@@ -18,7 +18,7 @@
 			Javascript! Websocket relies on Javascript being enabled. Please
 			enable Javascript and reload this page!</h2>
 	</noscript>
-	<div id="stage1">
+	<div id="create1">
 		<div class="row align-items-center">
             <div class="col-sm-3 col-xs-2"></div>
             <div class="col-sm-6 col-xs-8  align-self-center">
@@ -41,7 +41,7 @@
 			<div class="col-sm-4 col-xs-2"></div>
 		</div>
 	</div>
- <div id="stage2" class="hidden">
+ <div id="create2" class="hidden">
 		<div class="row align-items-center">
             <div class="col-sm-3 col-xs-2"></div>
             <div class="col-sm-6 col-xs-8  align-self-center">
@@ -74,5 +74,143 @@
 			<div class="col-sm-4 col-xs-2"></div>
 		</div>
 	</div>
+	<div id="create3" class= "hidden">
+
+        <div class="row align-items-center">
+            <div class="col-sm-3 col-xs-2"></div>
+            <div class="col-sm-6 col-xs-8  align-self-center">
+                <div class="contiainer">
+                	<img th:src="@{/images/HeaderPhoto.png}" class="responsive"/>
+                    <h1 class="title">Enter a username and room ID</h1>
+                    <form id="usernameForm" name="usernameForm">
+                        <div class="form-group">
+                            <input type="text" id="name"  class="form-control"  placeholder="Username"  required/>
+
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="room-id" class="form-control"    placeholder="Room ID" required />
+
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="join" class="button">Join</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-sm-4 col-xs-2"></div>
+        </div>
+
+</div>
+<div id="create4" class="hidden" >
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-md-8 ">
+            <div class="card-my ">
+
+                <div class="container-chat  ">
+                    <div class="chat-header">
+                    	<img th:src="@{/images/HeaderPhoto.png}" class="responsive"/>
+                    </div>
+
+					<!-- TEST BOARD -->
+					  <section class="memory-game">
+					    <div class="size3x3 playing-card">
+					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
+					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
+					    </div>
+					    <div class="size3x3 playing-card">
+					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
+					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
+					    </div>
+					    <div class="size3x3 playing-card">
+					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
+					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
+					    </div>
+					    
+					    <div class="size3x3 playing-card">
+					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
+					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
+					    </div>
+					    <div class="size3x3 playing-card">
+					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
+					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
+					    </div>
+					    <div class="size3x3 playing-card">
+					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
+					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
+					    </div>
+					
+					    <div class="size3x3 playing-card">
+					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
+					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
+					    </div>
+					    <div class="size3x3 playing-card">
+					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
+					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
+					    </div>
+					    <div class="size3x3 playing-card">
+					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
+					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
+					    </div>
+
+					  </section>
+
+                        <div class="form-group" id="role">
+                            <button type="submit" id="PLAYER1" class="primary inline">Player 1</button>
+                            <button type="submit" id="PLAYER2" class="primary inline">Player 2</button>
+                            <button type="submit" id="COMMIT" class="primary inline hidden">COMMIT</button>
+                            <button type="submit" id="RESTART" class="primary inline hidden">RESTART</button>
+                        </div>
+
+
+                </div>
+            </div>
+        </div>
+		
+		<div class="col-md-4">
+            <div class="card-my">
+                <div class="container-chat ">
+                    <div class="chat-header">
+                        <h2>Mystery Card</h2>             
+					</div>
+					
+					<div id="chosenCard">
+
+                    	<div class="chosen-playing-card">
+					      <img class="front-face" src="/uploads/ariel.jpeg">
+					      <img class="back-face" src="/images/Card1.png" alt="Back Face of Who Am I Card">
+					    </div>
+					</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card-my">
+                <div class="container-chat ">
+                    <div class="chat-header">
+                        <h2>Room: <span id="room-id-display"></span></h2>
+                    </div>
+                    <div class="connecting">
+                        Connecting...
+                    </div>
+                    <ul id="messageArea">
+
+                    </ul>
+                    <form id="messageForm" name="messageForm" nameForm="messageForm">
+                        <div class="form-group">
+                            <div class="input-group clearfix">
+                                <input type="text" id="message" placeholder="Type a message... or /join [room-id] to join another room."
+                                       autocomplete="off" class="form-control"/>
+                                <button type="submit" id="send" class="primary inline">Send</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 </body>
 </html>
