@@ -1,4 +1,3 @@
-
 //variables
 var stompClient = null;
 var currentSubscription;
@@ -9,6 +8,7 @@ var topic = null;
 var gameTopic = null;
 
 var size = null; 
+var numOfImages = null; 
 
 //differest states of the game
 var States = {
@@ -111,6 +111,8 @@ function setSize(){
     
     //check if size is not null
     if (size) {
+    
+    	console.log("Size of board: " + size); 
         $("#stage1").hide();
         $("#stage2").attr("class","");
 
@@ -166,23 +168,45 @@ function enterRoom(newRoomId) {
     stompClient.send(`${topic}/addUser`, {}, JSON.stringify({sender: username, type: 'JOIN'}));
     stompClient.send(`${gameTopic}/joinToTheGame`, {}, JSON.stringify({sender: username, type: 'JOIN'}));
 }
-//do poprawienia wszyyyystko
+
+
+//method to set the player 1 role
 function sendPLAYER1Role() {
+	//send the player role to the stomp client
     sendRole("PLAYER1");
+    
+    //disable to the PLAYER2 button for the player 1 
     $("#PLAYER2").prop("disabled",true);
+    
+    //set the the user's role to player 1
     myRole = Roles.PLAYER1;
 }
+
+//method to set the player 1 role
 function sendPLAYER2Role() {
+
+	//send the player role to the stomp client
     sendRole("PLAYER2");
+    
+    //disable to the PLAYER1 button for the player 2
     $("#PLAYER1").prop("disabled",true);
+    
+    //set the the user's role to player 1    
     myRole = Roles.PLAYER2;
 }
+
+//method to send the player role to the game
 function sendRole(roleToSend) {
+	//check if the role and stomp client is not null
     if (roleToSend && stompClient) {
+    
+    	//define the attributes of the role message with the username and chosen role
         var RoleMessage = {
             sender: username,
             role: roleToSend,
         };
+        
+        //send the role message to the game 
         stompClient.send(`${gameTopic}/sendRole`, {}, JSON.stringify(RoleMessage));
     }
 }
@@ -227,7 +251,7 @@ function onGameMessageReceived(payload) {
     }
     if(gameMessage.state == 'DEPLOYING'){
         if(DeployingFirstTime)
-        showNotification(gameMessage.player1 + " is DEPLOYING!")
+        showNotification(gameMessage.player1 + " is asking first!")
         DeployingFirstTime=false;
         currentState = States.DEPLOYING;
         $("#COMMIT").attr("class","primary inline");
