@@ -372,6 +372,12 @@ img.header-photo {
     padding-left: 90px;
 }
 
+img.responsive { 
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+}
+
 .center, 
 .middle {
   margin: auto;
