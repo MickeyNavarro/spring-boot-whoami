@@ -70,8 +70,9 @@ function restart(){
 
 //method to create the board based on size - needs size, numOfImages, and linkToImages to be populated
 function initBoard(){
-	//create an htmlString to hold the game board 
-    var htmlString = "";
+	//create an htmlString to hold the game board and chosen mystery card
+    var playingCardsHtml = "";
+	var chosenCardHtml = ""; 
 	
 	//check the size is not null
 	if (size) { 
@@ -80,41 +81,51 @@ function initBoard(){
 		if (size == 3) {
 			//loop to add a new playing card
 	   		for (var i = 1; i < numOfImages+1; i++) {
-			    htmlString += '<div class="size3x3 playing-card">' +
+			    playingCardsHtml += '<div class="size3x3 playing-card">' +
 						      '<img class="front-face" src="'+ linkToImages[i] +'"/>' +
 						      '<img class="back-face" src="/images/Card1.png" alt="Back Face of Who Am I Card" />' + 
 						    '</div>';
 			}
 	   	
-	   		console.log(htmlString); 
+	   		console.log("Playing Cards:" + playingCardsHtml); 
 			
 		}
 		else if (size == 4) {
 			//loop to add a new playing card
 	   		for (var i = 1; i < numOfImages+1; i++) {
-			    htmlString += '<div class="size4x3 playing-card">' +
+			    playingCardsHtml += '<div class="size4x3 playing-card">' +
 						      '<img class="front-face" src="'+ linkToImages[i] +'"/>' +
 						      '<img class="back-face" src="/images/Card1.png" alt="Back Face of Who Am I Card" />' + 
 						    '</div>';
 			}
 	   	
-	   		console.log(htmlString);
+	   		console.log(playingCardsHtml);
 			
 		}
 		else if (size == 5) {
 			//loop to add a new playing card
 	   		for (var i = 1; i < numOfImages+1; i++) {
-			    htmlString += '<div class="size5x3 playing-card">' +
+			    playingCardsHtml += '<div class="size5x3 playing-card">' +
 						      '<img class="front-face" src="'+ linkToImages[i] +'"/>' +
 						      '<img class="back-face" src="/images/Card1.png" alt="Back Face of Who Am I Card" />' + 
 						    '</div>';
 			}
 	   	
-	   		console.log(htmlString);
+	   		console.log(playingCardsHtml);
 		}
 		
-		//find the images div & add the htmlString to it 
-	   	document.getElementById("memory-game").innerHTML = htmlString;
+		let ran = Math.floor(Math.random() * numOfImages);
+		chosenCardHtml += '<div class="chosen-playing-card">' +
+					      '<img class="front-face" src="'+ linkToImages[ran] +'"/>' +
+					      '<img class="back-face" src="/images/Card1.png" alt="Back Face of Who Am I Card">' +
+					      '</div>'; 
+
+		console.log(chosenCardHtml);
+		
+		//find the divs & add the htmlStrings to it 
+	   	document.getElementById("memory-game").innerHTML = playingCardsHtml;
+	   	document.getElementById("chosenCard").innerHTML = chosenCardHtml;
+		
 	}
 
 }
@@ -304,7 +315,12 @@ function enterRoom(newRoomId) {
     stompClient.send(`${topic}/addUser`, {}, JSON.stringify({sender: username, type: 'JOIN'}));
     stompClient.send(`${gameTopic}/joinToTheGame`, {}, JSON.stringify({sender: username, type: 'JOIN'}));
     
-	sendBundle();  
+	//check if the bundle vars are already set 
+	if (size !== null && numOfImages !== null && linkToImages != null) {
+		
+		//send the bundle vars
+		sendBundle();  		
+	}
 	
 }
 
@@ -349,24 +365,22 @@ function sendRole(roleToSend) {
         stompClient.send(`${gameTopic}/sendRole`, {}, JSON.stringify(RoleMessage));
     }
 }
-function sendImages() {
-    console.log(JSON.stringify(linkToImages));
-    stompClient.send(`${gameTopic}/sendImages`, {}, JSON.stringify(linkToImages));
+
+//method to send the bundle vars to the endpoint
+function sendBundle() {
+    var BundleMessage ={
+        size: parseInt(size),
+		numOfImages: numOfImages,
+		linkToImages: linkToImages
+		
+    }
+    console.log(JSON.stringify(BundleMessage));
+
+	//sends the BundleMessage to this url - interfacts with the controller
+    stompClient.send(`${gameTopic}/sendBundle`, {}, JSON.stringify(BundleMessage));
 }
-function processText(inputText) {
-    var output = [];
-    console.log(inputText);
-    var text = ["element1","element2","element3"];
-    console.log(text);
-    var i = 0;
-    var outputout =  [];
-    inputText.forEach(function (item) {
-        output.push(item.replace(/\'/g, '').split(/(\d+)/).filter(Boolean));
-        outputout.push(output[i][1]);
-        i++;
-    });
-    return outputout;
-}
+
+
 function onGameMessageReceived(payload) {
     var gameMessage = JSON.parse(payload.body);
     console.log(gameMessage);
@@ -519,6 +533,7 @@ $(function () {
     });
     $( "#create-size" ).click(function() { setSize(); });
     $( "#create-images" ).click(function() { setImages(); });
+    $( "#create-game" ).click(function() { create(); });
     $( "#join" ).click(function() { connect(); });
     $("#send").click(function () {  sendMessage()});
     $( "#PLAYER1" ).click(function() { sendPLAYER1Role(); });
