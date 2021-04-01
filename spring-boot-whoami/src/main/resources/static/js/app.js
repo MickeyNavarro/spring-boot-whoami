@@ -12,6 +12,8 @@ var size = null;
 var numOfImages = null; 
 var linkToImages = {}; 
 
+var cards = []; 
+
 //differest states of the game
 var States = {
     WAITING: 1,
@@ -255,6 +257,7 @@ function onError(error) {
 }
 function enterRoom(newRoomId) {
     //initBoard(); //ADD THE BOARD TO THE ROOM 
+    addClick()
     roomId = newRoomId;
     $("#room-id-display").text(roomId);
     topic = `/app/chat/${newRoomId}`;
@@ -273,55 +276,6 @@ function enterRoom(newRoomId) {
     stompClient.send(`${gameTopic}/joinToTheGame`, {}, JSON.stringify({sender: username, type: 'JOIN'}));
 }
 
-//CARD FUNCTIONS 
-const cards = document.querySelectorAll('.playing-card');
-
-//method to flip a card from its front face to its back face & vice versa
-function flipCard() {
-
-	//check if card is already flipped
-  	if(this.classList.contains('flip')) { 
-  		//unflip the card - reveal front face
-   	 this.classList.remove('flip'); 
-  	}
-  	else {
-  		//flip the card - reveal back face
-    	this.classList.add('flip');
-  	}
-}
-
-function disableCards() {
-  firstCard.removeEventListener('click', flipCard);
-  secondCard.removeEventListener('click', flipCard);
-
-  resetBoard();
-}
-
-function unflipCards() {
-  lockBoard = true;
-
-  setTimeout(() => {
-    firstCard.classList.remove('flip');
-    secondCard.classList.remove('flip');
-
-    resetBoard();
-  }, 1500);
-}
-
-function resetBoard() {
-  [hasFlippedCard, lockBoard] = [false, false];
-  [firstCard, secondCard] = [null, null];
-}
-
-(function shuffle() {
-  cards.forEach(card => {
-    let randomPos = Math.floor(Math.random() * 12);
-    card.style.order = randomPos;
-  });
-})();
-
-//add the click functionality to each card
-cards.forEach(card => card.addEventListener('click', flipCard));
 
 //method to set the player 1 role
 function sendPLAYER1Role() {
@@ -502,6 +456,31 @@ function getAvatarColor(messageSender) {
     var index = Math.abs(hash % colors.length);
     return colors[index];
 }
+
+//CARD FUNCTIONS 
+function addClick() { 
+	//get the playing-card divs to represent cards
+	cards = document.querySelectorAll('.playing-card');
+	
+	//add the click functionality to each card
+	cards.forEach(card => card.addEventListener('click', flipCard));
+
+}
+
+//method to flip a card from its front face to its back face & vice versa
+function flipCard() {
+
+	//check if card is already flipped
+  	if(this.classList.contains('flip')) { 
+  		//unflip the card - reveal front face
+   	 this.classList.remove('flip'); 
+  	}
+  	else {
+  		//flip the card - reveal back face
+    	this.classList.add('flip');
+  	}
+}
+
 $(function () {
     $("form").on('submit', function (e) {
         e.preventDefault();
