@@ -48,14 +48,15 @@
                 <div class="contiainer">
                 	<img th:src="@{/images/HeaderPhoto.png}" class="responsive"/>
 					<h1 class="title">Choose the images for your game board</h1>
-					<form method="POST" th:object="${gameBundle}" action="create-username-code">
-							<h4>Please upload the links to each image</h4>
+						<h4>Please upload the links to each image</h4>
+					<div id="images"></div>
+					<!--<form method="POST">
 							<table class="table">
 								<tr>
 									<th><label>Image #</label></th>
 									<th><label>Details</label></th>
 								</tr>
-								<!--  <th:block th:each="image : ${gameBundle.images}">
+								<!--<th:block th:each="image : ${gameBundle.images}">
 									<tr>
 										<td><th:text="${image.ID}"/></td>
 										<td>Name of Person:<input type="text" name="name" value = "${image.name}">
@@ -63,12 +64,12 @@
 											File:<input type="text" name="name" value = "${image.url}">
 										</td>
 									</tr>
-								</th:block> --> 
+								</th:block>  
 							</table>
 							<div class="form-group">
                             	<button id="create-images" class="button">Next</button>
                         	</div>
-						</form>
+						</form>-->
 				</div>
 			</div>
 			<div class="col-sm-4 col-xs-2"></div>

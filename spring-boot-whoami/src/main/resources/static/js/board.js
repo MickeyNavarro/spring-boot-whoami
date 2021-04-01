@@ -4,11 +4,10 @@ let hasFlippedCard = false;
 let lockBoard = false;
 let firstCard, secondCard;
 
-//add the click functionality to each card
-cards.forEach(card => card.addEventListener('click', flipCard));
-
 //method to flip a card from its front face to its back face
 function flipCard() {
+  console.log("flipCard() was called"); 
+
   if (lockBoard) return;
   if (this === firstCard) return;
 
@@ -54,3 +53,5 @@ function resetBoard() {
   });
 })();
 
+//add the click functionality to each card
+cards.forEach(card => card.addEventListener('click', flipCard));

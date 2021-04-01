@@ -22,21 +22,15 @@ var Roles = {
     PLAYER1 : 2,
     PLAYER2 : 3,
 
-};
+}
 //game
-var sekundy = 0;
-var czasUplywa = false;
 var player2 = true;
 var player1 = true;
 var iknowBro = true;
 var DeployingFirstTime = true;
-var odkryto = {};
 var myRole = Roles.OBSERVER;
 var currentState = States.WAITING;
-var boardSize = 18;
 var flagCounter = 0;
-var boardBombs = [];
-var iloscOdkrytychPol = 0;
 var board = [];
 var visibleBoard = [];
 
@@ -54,16 +48,11 @@ function restart(){
     player1 = true;
     iknowBro = true;
     DeployingFirstTime = true;
-    odkryto = {};
     myRole = Roles.OBSERVER;
     currentState = States.WAITING;
     flagCounter = 0;
-    boardBombs = [];
-    iloscOdkrytychPol = 0;
     board = [];
     visibleBoard = [];
-    czasUplywa = false;
-    sekundy = 0;
     clearBoard();
     initBoard();
     $("#RESTART").hide();
@@ -112,9 +101,49 @@ function setSize(){
     //check if size is not null
     if (size) {
     
+    	//output the board size
     	console.log("Size of board: " + size); 
-        $("#stage1").hide();
-        $("#stage2").attr("class","");
+    	
+    	//hide the create1 div
+        $("#create1").hide();
+        
+        //add a form to create2 div
+        var htmlString = "";
+	   	htmlString += '<form method="POST"><table class="table">' +
+								'<tr>' +
+									'<th><label>Image #</label></th>' +
+									'<th><label>Link to Image</label></th>' +
+								'</tr>';
+		
+		//define how many images are needed 
+		numOfImages = size * 3; 
+		console.log("Number of Images Needed: " + numOfImages);
+		
+		//loop to add a new input based on the numOfImages
+	   	for(i=1;i<numOfImages+1;i++)
+	   	{
+	       	//htmlString += '<tr><th:text="'+ i +'" /></td> Link to Image:<input type="text" name="imageLinks['+ i +']"> </td></tr>';
+	       	htmlString += '<tr>' +
+							'<td>'+ i +'</td>' +
+							'<td><input type="text" name="imageLinks['+ i +']">' +
+							'</td>' +
+						'</tr>'; 
+	   	}
+	
+	   	htmlString += '</table>' +
+	   					'<div class="form-group">' + 
+	   						'<button id="create-images" class="button">Next</button>' + 
+	   					'</div>' + 
+	   				'</form>';
+	   	
+	   	console.log(htmlString); 
+	   	
+	   	document.getElementById("images").innerHTML = htmlString;
+        
+        //show the create2 div 
+        $("#create2").attr("class","");
+        
+        
 
     }
 }
@@ -131,8 +160,8 @@ function connect(){
     
     //check if username is not null
     if (username) {
-        $("#stage1").hide();
-        $("#stage2").attr("class","");
+        $("#join1").hide();
+        $("#join2").attr("class","");
 
 
         var socket = new SockJS('/ws');
@@ -169,6 +198,55 @@ function enterRoom(newRoomId) {
     stompClient.send(`${gameTopic}/joinToTheGame`, {}, JSON.stringify({sender: username, type: 'JOIN'}));
 }
 
+//CARD FUNCTIONS 
+const cards = document.querySelectorAll('.playing-card');
+
+//method to flip a card from its front face to its back face & vice versa
+function flipCard() {
+
+	//check if card is already flipped
+  	if(this.classList.contains('flip')) { 
+  		//unflip the card - reveal front face
+   	 this.classList.remove('flip'); 
+  	}
+  	else {
+  		//flip the card - reveal back face
+    	this.classList.add('flip');
+  	}
+}
+
+function disableCards() {
+  firstCard.removeEventListener('click', flipCard);
+  secondCard.removeEventListener('click', flipCard);
+
+  resetBoard();
+}
+
+function unflipCards() {
+  lockBoard = true;
+
+  setTimeout(() => {
+    firstCard.classList.remove('flip');
+    secondCard.classList.remove('flip');
+
+    resetBoard();
+  }, 1500);
+}
+
+function resetBoard() {
+  [hasFlippedCard, lockBoard] = [false, false];
+  [firstCard, secondCard] = [null, null];
+}
+
+(function shuffle() {
+  cards.forEach(card => {
+    let randomPos = Math.floor(Math.random() * 12);
+    card.style.order = randomPos;
+  });
+})();
+
+//add the click functionality to each card
+cards.forEach(card => card.addEventListener('click', flipCard));
 
 //method to set the player 1 role
 function sendPLAYER1Role() {
@@ -275,7 +353,7 @@ function onGameMessageReceived(payload) {
         showNotification(gameMessage.player2+": WIN!");
         $("#licznikFlag").text(gameMessage.flagCounter);
     }
-    if( gameMessage.visibleBoard.fields)setBoardView(gameMessage.visibleBoard.fields);
+    //if( gameMessage.visibleBoard.fields)setBoardView(gameMessage.visibleBoard.fields);
 }
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
