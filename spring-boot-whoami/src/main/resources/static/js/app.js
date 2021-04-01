@@ -7,8 +7,10 @@ var roomId = null;
 var topic = null;
 var gameTopic = null;
 
+//variables for create module
 var size = null; 
 var numOfImages = null; 
+var linkToImages = {}; 
 
 //differest states of the game
 var States = {
@@ -23,6 +25,7 @@ var Roles = {
     PLAYER2 : 3,
 
 }
+
 //game
 var player2 = true;
 var player1 = true;
@@ -87,6 +90,7 @@ var colors = [
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
 ];
 
+//method to set the size of the gameboard 
 function setSize(){
 
 	//check if variables are empty
@@ -107,13 +111,12 @@ function setSize(){
     	//hide the create1 div
         $("#create1").hide();
         
-        //add a form to create2 div
+        //create an htmlString to hold the form 
         var htmlString = "";
-	   	htmlString += '<form method="POST"><table class="table">' +
-								'<tr>' +
-									'<th><label>Image #</label></th>' +
-									'<th><label>Link to Image</label></th>' +
-								'</tr>';
+	   	htmlString += '<tr>' +
+						'<th><label>Image #</label></th>' +
+						'<th><label>Link to Image</label></th>' +
+					'</tr>';
 		
 		//define how many images are needed 
 		numOfImages = size * 3; 
@@ -122,29 +125,84 @@ function setSize(){
 		//loop to add a new input based on the numOfImages
 	   	for(i=1;i<numOfImages+1;i++)
 	   	{
-	       	//htmlString += '<tr><th:text="'+ i +'" /></td> Link to Image:<input type="text" name="imageLinks['+ i +']"> </td></tr>';
 	       	htmlString += '<tr>' +
 							'<td>'+ i +'</td>' +
-							'<td><input type="text" name="imageLinks['+ i +']">' +
+							'<td><input type="text" id="imageLink'+ i +'" >' +
 							'</td>' +
 						'</tr>'; 
 	   	}
-	
-	   	htmlString += '</table>' +
-	   					'<div class="form-group">' + 
-	   						'<button id="create-images" class="button">Next</button>' + 
-	   					'</div>' + 
-	   				'</form>';
 	   	
 	   	console.log(htmlString); 
 	   	
-	   	document.getElementById("images").innerHTML = htmlString;
+	   	//find the images div & add the htmlString to it 
+	   	document.getElementById("imageUpload").innerHTML = htmlString;
         
         //show the create2 div 
         $("#create2").attr("class","");
-        
-        
+    }
+}
 
+//method to set the images of the gameboard
+function setImages() { 
+	console.log("setImages() is called"); 
+	
+	//loop to add the images to a local array 
+	for(i=1;i<numOfImages+1;i++) { 
+		//console.log(document.getElementById("imageLink" + i).value); 
+		
+		linkToImages[i] = document.getElementById("imageLink" + i).value; 
+		
+		console.log("linkToImages" + i + " " + linkToImages[i]); 
+	}
+	
+	//hide the create2 div
+    $("#create2").hide();
+        
+    //show the create3 div 
+    $("#create3").attr("class","");
+
+}
+
+function create(){
+
+	//check if the room id or name variables are empty
+    if( $('#room-id').val() == "" ||  $('#name').val() == "" )
+    {
+        preventDefault();
+    }
+    
+    //trim white space
+    username = $("#name").val().trim();
+    
+    //check if username is not null
+    if (username) {
+    
+    	//hide & show the certain divs
+        $("#create3").hide();
+        
+        //create an htmlString to hold the game board 
+        var htmlString = "";
+		
+		//loop to add a new playing card
+	   	for (var i = 1; i < numOfImages+1; i++) {
+		    htmlString += '<div class="size3x3 playing-card">' +
+					      '<img class="front-face" src="'+ linkToImages[i] +'"/>' +
+					      '<img class="back-face" src="/images/Card1.png" alt="Back Face of Who Am I Card" />' + 
+					    '</div>';
+		}
+	   	
+	   	console.log(htmlString); 
+	   	
+	   	//find the images div & add the htmlString to it 
+	   	document.getElementById("memory-game").innerHTML = htmlString;
+        
+        $("#create4").attr("class","");
+
+        var socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, onConnected, onError);
+        
+        sendImages();  
     }
 }
 function connect(){
@@ -160,9 +218,26 @@ function connect(){
     
     //check if username is not null
     if (username) {
+    
         $("#join1").hide();
+        
+        //create an htmlString to hold the game board 
+        var htmlString = "";
+		
+		//loop to add a new playing card
+	   	for (var i = 1; i < numOfImages+1; i++) {
+		    htmlString += '<div class="size3x3 playing-card">' +
+					      '<img class="front-face" src="'+ linkToImages[i] +'"/>' +
+					      '<img class="back-face" src="/images/Card1.png" alt="Back Face of Who Am I Card" />' + 
+					    '</div>';
+		}
+	   	
+	   	console.log(htmlString); 
+	   	
+	   	//find the images div & add the htmlString to it 
+	   	document.getElementById("memory-game").innerHTML = htmlString;
+        
         $("#join2").attr("class","");
-
 
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
@@ -288,12 +363,9 @@ function sendRole(roleToSend) {
         stompClient.send(`${gameTopic}/sendRole`, {}, JSON.stringify(RoleMessage));
     }
 }
-function sendMove(board) {
-    var BoardMessage ={
-        fields: board,
-    }
-    console.log(JSON.stringify(BoardMessage));
-    stompClient.send(`${gameTopic}/sendMove`, {}, JSON.stringify(BoardMessage));
+function sendImages() {
+    console.log(JSON.stringify(linkToImages));
+    stompClient.send(`${gameTopic}/sendImages`, {}, JSON.stringify(linkToImages));
 }
 function processText(inputText) {
     var output = [];
@@ -435,6 +507,8 @@ $(function () {
         e.preventDefault();
     });
     $( "#create-size" ).click(function() { setSize(); });
+    $( "#create-images" ).click(function() { setImages(); });
+    $( "#create-game" ).click(function() { create(); });
     $( "#join" ).click(function() { connect(); });
     $("#send").click(function () {  sendMessage()});
     $( "#PLAYER1" ).click(function() { sendPLAYER1Role(); });

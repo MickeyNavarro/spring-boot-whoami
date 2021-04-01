@@ -402,7 +402,8 @@ img.responsive {
   box-sizing: border-box;
 }
 
-.memory-game {
+.memory-game, 
+#memory-game {
   width: 400px;
   height: 400px;
   margin: auto;

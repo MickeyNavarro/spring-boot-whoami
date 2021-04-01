@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Join Game</title>
+    <title>Create Game</title>
     <link href="/webjars/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
     <link href="/css/main.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.css" rel="stylesheet">
@@ -25,7 +25,7 @@
                 <div class="contiainer">
                 	<img th:src="@{/images/HeaderPhoto.png}" class="responsive"/>
 					<h1 class="title">Choose the size of your game board</h1>
-					<form method="POST">
+					<form method="GET">
 						<select name="size" id="size">
 							<option value="3">Easy (3 x 3)</option>
 							<option value="4">Medium (4 x 3)</option>
@@ -49,27 +49,15 @@
                 	<img th:src="@{/images/HeaderPhoto.png}" class="responsive"/>
 					<h1 class="title">Choose the images for your game board</h1>
 						<h4>Please upload the links to each image</h4>
-					<div id="images"></div>
-					<!--<form method="POST">
-							<table class="table">
-								<tr>
-									<th><label>Image #</label></th>
-									<th><label>Details</label></th>
-								</tr>
-								<!--<th:block th:each="image : ${gameBundle.images}">
-									<tr>
-										<td><th:text="${image.ID}"/></td>
-										<td>Name of Person:<input type="text" name="name" value = "${image.name}">
-											<br/>
-											File:<input type="text" name="name" value = "${image.url}">
-										</td>
-									</tr>
-								</th:block>  
+					<div id="images">
+						<form method="POST">
+							<table class="table" id="imageUpload">
 							</table>
 							<div class="form-group">
-                            	<button id="create-images" class="button">Next</button>
-                        	</div>
-						</form>-->
+								<button id="create-images" class="button">Next</button>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
 			<div class="col-sm-4 col-xs-2"></div>
@@ -93,7 +81,7 @@
 
                         </div>
                         <div class="form-group">
-                            <button type="submit" id="join" class="button">Join</button>
+                            <button type="submit" id="create-game" class="button">Create</button>
                         </div>
                     </form>
                 </div>
@@ -113,47 +101,8 @@
                     	<img th:src="@{/images/HeaderPhoto.png}" class="responsive"/>
                     </div>
 
-					<!-- TEST BOARD -->
 					  <section class="memory-game">
-					    <div class="size3x3 playing-card">
-					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
-					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
-					    </div>
-					    <div class="size3x3 playing-card">
-					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
-					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
-					    </div>
-					    <div class="size3x3 playing-card">
-					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
-					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
-					    </div>
-					    
-					    <div class="size3x3 playing-card">
-					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
-					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
-					    </div>
-					    <div class="size3x3 playing-card">
-					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
-					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
-					    </div>
-					    <div class="size3x3 playing-card">
-					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
-					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
-					    </div>
-					
-					    <div class="size3x3 playing-card">
-					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
-					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
-					    </div>
-					    <div class="size3x3 playing-card">
-					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
-					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
-					    </div>
-					    <div class="size3x3 playing-card">
-					      <img class="front-face"th:src="@{/uploads/ariel.jpeg}"/>
-					      <img class="back-face" th:src="@{/images/Card1.png}" alt="Back Face of Who Am I Card" />
-					    </div>
-
+					  	<div id="memory-game"></div>
 					  </section>
 
                         <div class="form-group" id="role">
@@ -162,8 +111,6 @@
                             <button type="submit" id="COMMIT" class="primary inline hidden">COMMIT</button>
                             <button type="submit" id="RESTART" class="primary inline hidden">RESTART</button>
                         </div>
-
-
                 </div>
             </div>
         </div>
@@ -213,5 +160,6 @@
     </div>
 </div>
 </div>
+
 </body>
 </html>
