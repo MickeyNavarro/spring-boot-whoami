@@ -10,8 +10,8 @@ public class GameState {
     State state;
     Board board;
     Board visibleBoard;
-    String bomber = "";
-    String saper =  "";
+    String player1 = "";
+    String player2 =  "";
 
     public Board getVisibleBoard() {
         return visibleBoard;
@@ -37,19 +37,20 @@ public class GameState {
         this.board = board;
     }
 
-    public String getBomber() {
-        return bomber;
-    }
+	public String getPlayer1() {
+		return player1;
+	}
 
-    public void setBomber(String bomber) {
-        this.bomber = bomber;
-    }
+	public void setPlayer1(String player1) {
+		this.player1 = player1;
+	}
 
-    public String getSaper() {
-        return saper;
-    }
+	public String getPlayer2() {
+		return player2;
+	}
 
-    public void setSaper(String saper) {
-        this.saper = saper;
-    }
+	public void setPlayer2(String player2) {
+		this.player2 = player2;
+	}
+
 }
