@@ -404,14 +404,14 @@ img.responsive {
 
 .memory-game, 
 #memory-game {
-  width: 400px;
+  width: 500px;
   height: 400px;
   margin: auto;
   display: flex;
   flex-wrap: wrap;
   perspective: 1000px;
-  overflow: auto;
-  overflow-y: scroll;
+  /*overflow: auto;
+  overflow-y: scroll;*/
 }
 
 .playing-card {
