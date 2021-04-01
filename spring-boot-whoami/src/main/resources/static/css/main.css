@@ -154,16 +154,13 @@ button.accent {
     background-color: #222222;
     display: table;
 }
-#stage1{
-    padding-top: 150px;
-}
-
 #create1, 
 #create2, 
 #create3, 
 #join1, 
 #home {
     padding-top: 150px;
+    padding-bottom: 150px;
 }
 .card-my {
 
@@ -192,8 +189,12 @@ button.accent {
     background-color: #ffffff;
 
 
-    max-height: 600px;
+    max-height: 1100px;
     position: relative;
+    
+    /* Allow scrolling mechanism
+    overflow: auto;
+    overflow-y: scroll;*/
 }
 .hidden {
     display: none;
