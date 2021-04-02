@@ -221,7 +221,7 @@ button.accent {
     padding: 15px;
     border-bottom: 2px solid #f0f0f0;
 }
-#join2 ul {
+#join2 ul, #create4 ul {
     list-style-type: none;
     background-color: #FFF;
     margin: 0;
@@ -330,6 +330,57 @@ p {
     color: #43464b;
 }
 #join2 .chat-message {
+    padding-left: 68px;
+    position: relative;
+}
+
+
+#create4 .chat-message i {
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 18px;
+    line-height: 42px;
+    color: #fff;
+    text-align: center;
+    border-radius: 50%;
+    font-style: normal;
+    text-transform: uppercase;
+}
+#create4 .event-message p {
+    color: #777;
+    font-size: 14px;
+    word-wrap: break-word;
+}
+#create4 .chat-message p {
+    color: #43464b;
+}
+#create4 ul li {
+    margin: 0;
+}
+#create4 ul li {
+    line-height: 1.5rem;
+    padding: 10px 20px;
+    margin: 0;
+    border-bottom: 1px solid #f4f4f4;
+}
+#create4 .chat-message span {
+    color: #333;
+    font-weight: 600;
+}
+#create4 .event-message {
+    width: 100%;
+    text-align: center;
+    clear: both;
+}
+#create4 .chat-message p {
+    color: #43464b;
+}
+#create4 .chat-message {
     padding-left: 68px;
     position: relative;
 }
