@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.SeniorCapstone.WhoAmI.model.Board;
 import com.SeniorCapstone.WhoAmI.model.Bundle;
 import com.SeniorCapstone.WhoAmI.model.GameState;
 import com.SeniorCapstone.WhoAmI.model.IfWinMessage;
