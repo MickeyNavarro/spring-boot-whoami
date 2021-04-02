@@ -8,18 +8,9 @@ public class GameState {
     }
 
     State state;
-    Board board;
-    Board visibleBoard;
+    Bundle bundle;
     String player1 = "";
     String player2 =  "";
-
-    public Board getVisibleBoard() {
-        return visibleBoard;
-    }
-
-    public void setVisibleBoard(Board visibleBoard) {
-        this.visibleBoard = visibleBoard;
-    }
 
     public State getState() {
         return state;
@@ -29,13 +20,13 @@ public class GameState {
         this.state = state;
     }
 
-    public Board getBoard() {
-        return board;
-    }
+	public Bundle getBundle() {
+		return bundle;
+	}
 
-    public void setBoard(Board board) {
-        this.board = board;
-    }
+	public void setBundle(Bundle bundle) {
+		this.bundle = bundle;
+	}
 
 	public String getPlayer1() {
 		return player1;

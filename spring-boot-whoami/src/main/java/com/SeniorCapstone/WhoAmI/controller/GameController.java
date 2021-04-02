@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.SeniorCapstone.WhoAmI.model.Board;
-import com.SeniorCapstone.WhoAmI.model.GameBundle;
+import com.SeniorCapstone.WhoAmI.model.Bundle;
 import com.SeniorCapstone.WhoAmI.model.GameState;
 import com.SeniorCapstone.WhoAmI.model.IfWinMessage;
 import com.SeniorCapstone.WhoAmI.model.Image;
@@ -36,9 +36,7 @@ import java.io.IOException;
 @Controller
 public class GameController {
 	
-	//initialize the game board bundle 
-	private static GameBundle theGameBundle = new GameBundle(); 
-
+	//initialize the game state  
     static HashMap<String, GameState> GamesState = new HashMap<String, GameState>();
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
@@ -76,18 +74,12 @@ public class GameController {
         //jest w trakcie rozbrajania
         messagingTemplate.convertAndSend(format("/game/%s", roomId), gameState);
     }
-    @MessageMapping("/game/{roomId}/sendBoard")
-    public void sendBoard(@DestinationVariable String roomId, @Payload Board board) {
+    @MessageMapping("/game/{roomId}/sendBundle")
+    public void sendBundle(@DestinationVariable String roomId, @Payload Bundle bundle) { 
 
         GameState gameState = GamesState.get(roomId);
 
-        gameState.setBoard(board);//tu ustawia bomby
-        messagingTemplate.convertAndSend(format("/game/%s", roomId), gameState);
-    }
-    @MessageMapping("/game/{roomId}/sendMove")
-    public void sendMove(@DestinationVariable String roomId, @Payload Board board) {
-        GameState gameState = GamesState.get(roomId);
-        gameState.setVisibleBoard(board);//tu ustawia to co widzi
+        gameState.setBundle(bundle);
         messagingTemplate.convertAndSend(format("/game/%s", roomId), gameState);
     }
 
