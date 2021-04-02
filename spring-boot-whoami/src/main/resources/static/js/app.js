@@ -263,25 +263,9 @@ function connect(){
     
     //check if username is not null
     if (username) {
-    
-        $("#join1").hide();
-        
-        /*//create an htmlString to hold the game board 
-        var htmlString = "";
-		
-		//loop to add a new playing card
-	   	for (var i = 1; i < numOfImages+1; i++) {
-		    htmlString += '<div class="size3x3 playing-card">' +
-					      '<img class="front-face" src="'+ linkToImages[i] +'"/>' +
-					      '<img class="back-face" src="/images/Card1.png" alt="Back Face of Who Am I Card" />' + 
-					    '</div>';
-		}
-	   	
-	   	console.log(htmlString); 
-	   	
-	   	//find the images div & add the htmlString to it 
-	   	document.getElementById("memory-game").innerHTML = htmlString;*/
-        
+    	
+		//hide & show certain divs
+        $("#join1").hide();  
         $("#join2").attr("class","");
 
         var socket = new SockJS('/ws');
@@ -374,11 +358,13 @@ function sendRole(roleToSend) {
 
 //method to send the bundle vars to the endpoint
 function sendBundle() {
+	//convert dictionary to list
 	var listOfLinks = [];
 	for (var i = 1; i < numOfImages+1; i++) {
 		listOfLinks.push(linkToImages[i]);
 	}
 
+	//define bundleMessage - basically, sendBundle() will receive this as the bundle POJO
     var BundleMessage ={
 		size: parseInt(size),
 		numOfImages: parseInt(numOfImages),
@@ -392,9 +378,27 @@ function sendBundle() {
 
 
 function onGameMessageReceived(payload) {
-	console.log(payload); 
     var gameMessage = JSON.parse(payload.body);
-    console.log(gameMessage);
+	
+	if(Object.keys(linkToImages).length === 0) {
+		console.log("New player! Let's give you the board!");
+		
+		//console.log(gameMessage.bundle.linkToImages); 
+		
+		numOfImages = gameMessage.bundle.numOfImages; 
+		size = gameMessage.bundle.size; 
+		
+		//loop to add the images to a local array 
+		for(i=1;i<numOfImages+1;i++) { 			
+			linkToImages[i] = gameMessage.bundle.linkToImages[i-1];  
+			
+			console.log("linkToImages" + i + " " + linkToImages[i]); 
+		}
+		
+		initBoard(); //ADD THE BOARD TO THE ROOM 
+	    addClick(); 
+		shuffle();
+	}
     if(gameMessage.restart){
         showNotification("RESTART!");
         restart();
