@@ -395,9 +395,11 @@ function onGameMessageReceived(payload) {
 			console.log("linkToImages" + i + " " + linkToImages[i]); 
 		}
 		
-		initBoard(); //ADD THE BOARD TO THE ROOM 
+		//re-send & set the board
+		initBoard(); 
 	    addClick(); 
 		shuffle();
+		sendBundle(); //Persists the bundle in the endpoint
 	}
     if(gameMessage.restart){
         showNotification("RESTART!");
