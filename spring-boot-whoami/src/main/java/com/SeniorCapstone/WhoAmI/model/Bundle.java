@@ -1,6 +1,8 @@
+//Almicke Navarro (with the mentoring of Isaiah Discipulo) 
+//CST-452
+//January 12, 2021 
+//I used the source code from the following website: https://github.com/MickeyNavarro/KaraokeMachine, https://github.com/Artur-Wisniewski/minesweeper
 package com.SeniorCapstone.WhoAmI.model;
-
-import java.util.List;
 
 public class Bundle {
 
@@ -12,6 +14,7 @@ public class Bundle {
 	//default constructor 
 	public Bundle() {}
 
+	//getters & setters
 	public Integer getSize() {
 		return size;
 	}

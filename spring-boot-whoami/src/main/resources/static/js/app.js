@@ -1,4 +1,4 @@
-//Almicke Navarro 
+//Almicke Navarro (with the mentoring of Isaiah Discipulo)
 //CST-452 
 //March 1, 2021 
 //I used the source code from the following websites: https://github.com/code-sketch/memory-game, https://github.com/Artur-Wisniewski/minesweeper
@@ -181,11 +181,12 @@ function setSize(){
 		console.log("Number of Images Needed: " + numOfImages);
 		
 		//loop to add a new input based on the numOfImages
+		/* tried to incorporate the required tag in the input, but that resulted in an error instead of the form validation */
 	   	for(i=1;i<numOfImages+1;i++)
 	   	{
 	       	htmlString += '<tr>' +
 							'<td>'+ i +'</td>' +
-							'<td><input type="text" id="imageLink'+ i +'" >' +
+							'<td><input type="text" id="imageLink'+ i +'" placeholder="Link to image">' +
 							'</td>' +
 						'</tr>'; 
 	   	}

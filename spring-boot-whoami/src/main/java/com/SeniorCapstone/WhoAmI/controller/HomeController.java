@@ -1,3 +1,7 @@
+//Almicke Navarro (with the mentoring of Isaiah Discipulo) 
+//CST-452
+//January 12, 2021 
+//I used the source code from the following website: https://github.com/MickeyNavarro/KaraokeMachine, https://github.com/Artur-Wisniewski/minesweeper
 package com.SeniorCapstone.WhoAmI.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 public class HomeController {
 	
-	
+	//method to map to home page
 	@GetMapping("/home")
 	public ModelAndView home() 
 	{		
@@ -17,6 +21,7 @@ public class HomeController {
 	    return mv;
 	}
 
+	//method to map to join page
 	@GetMapping("/join")
 	public ModelAndView join() 
 	{		
@@ -26,6 +31,7 @@ public class HomeController {
 	    return mv;
 	}
 	
+	//method to map to create page
 	@GetMapping("/create")
 	public ModelAndView create() 
 	{		

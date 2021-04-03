@@ -1,3 +1,7 @@
+//Almicke Navarro (with the mentoring of Isaiah Discipulo) 
+//CST-452
+//March 7, 2021 
+//I used the source code from the following website: https://github.com/MickeyNavarro/KaraokeMachine, https://github.com/Artur-Wisniewski/minesweeper
 package com.SeniorCapstone.WhoAmI.controller;
 
 import static java.lang.String.format;
@@ -16,62 +20,83 @@ import com.SeniorCapstone.WhoAmI.model.ChatMessage;
 import com.SeniorCapstone.WhoAmI.model.GameState;
 import com.SeniorCapstone.WhoAmI.model.RestartMessage;
 
-
 @Controller
 public class ChatController {
 
-  private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
 
-  @Autowired
-  private SimpMessageSendingOperations messagingTemplate;
+	@Autowired
+	private SimpMessageSendingOperations messagingTemplate;
 
-  @MessageMapping("/chat/{roomId}/sendMessage")
-  public void sendMessage(@DestinationVariable String roomId, @Payload ChatMessage chatMessage) {
-    messagingTemplate.convertAndSend(format("/channel/%s", roomId), chatMessage);
-  }
+	// method to receive the chat message
+	@MessageMapping("/chat/{roomId}/sendMessage")
+	public void sendMessage(@DestinationVariable String roomId, @Payload ChatMessage chatMessage) {
+		// update the channel with the new message
+		messagingTemplate.convertAndSend(format("/channel/%s", roomId), chatMessage);
+	}
 
-  @MessageMapping("/chat/{roomId}/addUser")
-  public void addUser(@DestinationVariable String roomId, @Payload ChatMessage chatMessage,
-                      SimpMessageHeaderAccessor headerAccessor) {
+	// method to receive the new user who has join the game room
+	@MessageMapping("/chat/{roomId}/addUser")
+	public void addUser(@DestinationVariable String roomId, @Payload ChatMessage chatMessage,
+			SimpMessageHeaderAccessor headerAccessor) {
 
+		// get the room ID
+		String currentRoomId = (String) headerAccessor.getSessionAttributes().put("room_id", roomId);
 
+		// check if room ID currently exists
+		if (currentRoomId != null) {
+			System.out.println("current Room = " + currentRoomId);
 
-    String currentRoomId = (String) headerAccessor.getSessionAttributes().put("room_id", roomId);
-    //gdyby bylo cos tutaj to znaczyloby ze uzytkownik byl juz w jakims pokoju a to musimy obsluzyc
-    if (currentRoomId != null) {
-      System.out.println("currnet Room = " + currentRoomId);
-      ChatMessage leaveMessage = new ChatMessage();
-      leaveMessage.setType(ChatMessage.MessageType.LEAVE);
-      leaveMessage.setSender(chatMessage.getSender());
-      messagingTemplate.convertAndSend(format("/channel/%s", currentRoomId), leaveMessage);
+			// if yes, create the message that the user is leaving the room
+			ChatMessage leaveMessage = new ChatMessage();
+			leaveMessage.setType(ChatMessage.MessageType.LEAVE);
+			leaveMessage.setSender(chatMessage.getSender());
 
+			// update the channel with the new message
+			messagingTemplate.convertAndSend(format("/channel/%s", currentRoomId), leaveMessage);
 
-      //why it is here, because at start we used addUser not joinToTheGame
-      String username = (String) headerAccessor.getSessionAttributes().get("username");
-      if( GameController.GamesState.containsKey(currentRoomId)){
-          resetTheGameIfNeeded(username,currentRoomId);
-      }
-    }
-    headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-    messagingTemplate.convertAndSend(format("/channel/%s", roomId), chatMessage);
-  }
-  private boolean ifPlayerHaveAnImportantRoleInCurrentState(GameState gameState, String username){
-    return (gameState.getState() == GameState.State.PLAYING &&
-            gameState.getPlayer1().equals(username) ||
-            gameState.getPlayer2().equals(username) ||
-            ((gameState.getState() == GameState.State.WIN1 ||
-                    gameState.getState() == GameState.State.WIN2)
-                    && gameState.getPlayer2().equals(username)) ||
-            ( gameState.getState() == GameState.State.WAITING_FOR_PLAYERS
-                    && (gameState.getPlayer1().equals(username) || gameState.getPlayer2().equals(username))));
-  }
-  private void resetTheGameIfNeeded(String username,String currentRoomId){
-    GameState gameState =  GameController.GamesState.get(currentRoomId);
-    if(ifPlayerHaveAnImportantRoleInCurrentState(gameState,username)){
-      RestartMessage restartMessage = new RestartMessage();
-      restartMessage.setRestart(true);
-      GameController.GamesState.remove(currentRoomId);
-      messagingTemplate.convertAndSend(format("/game/%s", currentRoomId), restartMessage);
-    }
-  }
+			// get the username of the user sending the message
+			String username = (String) headerAccessor.getSessionAttributes().get("username");
+
+			// check if gamestate has the same room ID
+			if (GameController.GamesState.containsKey(currentRoomId)) {
+				// reset the game
+				resetTheGameIfNeeded(username, currentRoomId);
+			}
+		}
+
+		// set the username of the sender
+		headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+		// update the channel with the new message
+		messagingTemplate.convertAndSend(format("/channel/%s", roomId), chatMessage);
+	}
+
+	// method to check if the current player is in the game
+	private boolean ifPlayerHaveAnImportantRoleInCurrentState(GameState gameState, String username) {
+		//returns yes or no based on if the current gamestate is set & if the username exists in the gamestate 
+		return (gameState.getState() == GameState.State.PLAYING && gameState.getPlayer1().equals(username)
+				|| gameState.getPlayer2().equals(username)
+				|| ((gameState.getState() == GameState.State.WIN1 || gameState.getState() == GameState.State.WIN2)
+						&& gameState.getPlayer2().equals(username))
+				|| (gameState.getState() == GameState.State.WAITING_FOR_PLAYERS
+						&& (gameState.getPlayer1().equals(username) || gameState.getPlayer2().equals(username))));
+	}
+
+	//method to reset game 
+	private void resetTheGameIfNeeded(String username, String currentRoomId) {
+		GameState gameState = GameController.GamesState.get(currentRoomId);
+		
+		//checks if the user exists in the game
+		if (ifPlayerHaveAnImportantRoleInCurrentState(gameState, username)) {
+			//if yes, a new message is created to reset the game
+			RestartMessage restartMessage = new RestartMessage();
+			restartMessage.setRestart(true);
+			
+			//removes the room ID from the game state 
+			GameController.GamesState.remove(currentRoomId);
+
+			// update the channel with the new message
+			messagingTemplate.convertAndSend(format("/game/%s", currentRoomId), restartMessage);
+		}
+	}
 }

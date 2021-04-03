@@ -1,3 +1,7 @@
+//Almicke Navarro (with the mentoring of Isaiah Discipulo)
+//CST-452
+//March 7, 2021 
+//I used the source code from the following website:https://github.com/Artur-Wisniewski/minesweeper, https://github.com/kkedzierskim/chat-app
 package com.SeniorCapstone.WhoAmI.xml.model;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -9,10 +13,14 @@ import java.util.List;
 
 @XmlRootElement(name="websocket-message-broker")
 public class WebsocketMessageBroker {
-    private String applicationDestinationPrefix;
+	/* This class is used to get the prefixes determined in the webSocketConfiguration.xml - this will help to determine the destination of the endpoints */
+	
+	//attributes
+    private String applicationDestinationPrefix; 
     private WebsocketStompEndPoint websocketStompEndPoint;
     private List<WebsocketSimpleBroker> WebsocketSimpleBrokers  = new ArrayList<>();
 
+    //getters & setters
     @XmlElements(@XmlElement(name="websocket-simple-broker"))
     public List<WebsocketSimpleBroker> getWebsocketSimpleBrokers() {
         return WebsocketSimpleBrokers;

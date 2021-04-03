@@ -1,6 +1,11 @@
+//Almicke Navarro (with the mentoring of Isaiah Discipulo) 
+//CST-452
+//March 1, 2021 
+//I used the source code from the following website:https://github.com/Artur-Wisniewski/minesweeper, https://github.com/kkedzierskim/chat-app
 package com.SeniorCapstone.WhoAmI.model;
 
 public class GameState {
+	//attribute to hold the different states of the game 
     public enum State {
         WAITING_FOR_PLAYERS,
         PLAYING,
@@ -8,11 +13,13 @@ public class GameState {
         WIN1,WIN2;
     }
 
+    //attributes
     State state;
     Bundle bundle;
     String player1 = "";
     String player2 =  "";
 
+    //getters & setters
     public State getState() {
         return state;
     }
