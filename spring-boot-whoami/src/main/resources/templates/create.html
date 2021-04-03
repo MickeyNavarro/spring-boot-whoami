@@ -108,8 +108,10 @@
                         <div class="form-group" id="role">
                             <button type="submit" id="PLAYER1" class="primary inline">Player 1</button>
                             <button type="submit" id="PLAYER2" class="primary inline">Player 2</button>
-                            <button type="submit" id="COMMIT" class="primary inline hidden">COMMIT</button>
-                            <button type="submit" id="RESTART" class="primary inline hidden">RESTART</button>
+                            <button type="submit" id="FINAL-GUESS" class="primary inline hidden">Final Guess</button>
+                            <button type="submit" id="PLAY-AGAIN" class="primary inline hidden">Play Again</button>
+                            <button type="submit" id="CREATE-AGAIN" class="secondary inline hidden">Create New Game</button>
+	                        <button type="submit" id="JOIN-AGAIN" class="secondary inline hidden">Join New Game</button>
                         </div>
                 </div>
             </div>
@@ -123,11 +125,6 @@
 					</div>
 					
 					<div id="chosenCard">
-
-                    	<!--  <div class="chosen-playing-card">
-					      <img class="front-face" src="/uploads/ariel.jpeg">
-					      <img class="back-face" src="/images/Card1.png" alt="Back Face of Who Am I Card">
-					    </div>-->
 					</div>
                 </div>
             </div>
@@ -148,7 +145,7 @@
                     <form id="messageForm" name="messageForm" nameForm="messageForm">
                         <div class="form-group">
                             <div class="input-group clearfix">
-                                <input type="text" id="message" placeholder="Type a message... or /join [room-id] to join another room."
+                                <input type="text" id="message" placeholder="Type a message..."
                                        autocomplete="off" class="form-control"/>
                                 <button type="submit" id="send" class="primary inline">Send</button>
                             </div>

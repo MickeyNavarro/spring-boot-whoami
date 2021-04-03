@@ -3,8 +3,9 @@ package com.SeniorCapstone.WhoAmI.model;
 public class GameState {
     public enum State {
         WAITING_FOR_PLAYERS,
-        DEPLOYING,
-        LOST,WIN;
+        PLAYING,
+        FINALGUESS1, FINALGUESS2, 
+        WIN1,WIN2;
     }
 
     State state;

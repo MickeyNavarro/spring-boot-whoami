@@ -56,11 +56,11 @@ public class ChatController {
     messagingTemplate.convertAndSend(format("/channel/%s", roomId), chatMessage);
   }
   private boolean ifPlayerHaveAnImportantRoleInCurrentState(GameState gameState, String username){
-    return (gameState.getState() == GameState.State.DEPLOYING &&
+    return (gameState.getState() == GameState.State.PLAYING &&
             gameState.getPlayer1().equals(username) ||
             gameState.getPlayer2().equals(username) ||
-            ((gameState.getState() == GameState.State.LOST ||
-                    gameState.getState() == GameState.State.WIN)
+            ((gameState.getState() == GameState.State.WIN1 ||
+                    gameState.getState() == GameState.State.WIN2)
                     && gameState.getPlayer2().equals(username)) ||
             ( gameState.getState() == GameState.State.WAITING_FOR_PLAYERS
                     && (gameState.getPlayer1().equals(username) || gameState.getPlayer2().equals(username))));

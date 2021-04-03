@@ -1,3 +1,8 @@
+//Almicke Navarro 
+//CST-452 
+//March 1, 2021 
+//I used the source code from the following websites: https://github.com/code-sketch/memory-game, https://github.com/Artur-Wisniewski/minesweeper
+
 //variables
 var stompClient = null;
 var currentSubscription;
@@ -17,7 +22,11 @@ var cards = [];
 //differest states of the game
 var States = {
     WAITING: 1,
-    DEPLOYING: 2,
+    PLAYING: 2,
+	FINALGUESS1: 3,
+	FINALGUESS2: 4,
+	WIN1: 5, 
+	WIN2 : 6
 };
 
 //different roles
@@ -31,13 +40,10 @@ var Roles = {
 //game
 var player2 = true;
 var player1 = true;
-var iknowBro = true;
-var DeployingFirstTime = true;
+var startOfGame = true;
+var endOfGame = false;
 var myRole = Roles.OBSERVER;
 var currentState = States.WAITING;
-var flagCounter = 0;
-var board = [];
-var visibleBoard = [];
 
 //method to restart the server
 function initRestart(){
@@ -47,25 +53,23 @@ function initRestart(){
     };
     stompClient.send(`${gameTopic}/restart`, {}, JSON.stringify(restart));
 }
-function restart(){
+//method to play again - reset roles & state/recreate board/choose new mystery card (METHOD NOT CURRENTLY USED)
+function playAgain(){
     //restart client
     player2 = true;
     player1 = true;
-    iknowBro = true;
-    DeployingFirstTime = true;
+    startOfGame = true;
+	endOfGame = false;
     myRole = Roles.OBSERVER;
     currentState = States.WAITING;
-    flagCounter = 0;
-    board = [];
-    visibleBoard = [];
-    clearBoard();
-    initBoard();
-    $("#RESTART").hide();
+	shuffle();
+    $("#PLAY-AGAIN").hide();
     $("#PLAYER1").show();
     $("#PLAYER1").prop("disabled",false);
     $("#PLAYER2").show();
     $("#PLAYER2").prop("disabled",false);
-    $("#COMMIT").hide();
+    $("#FINAL-GUESS").hide();
+	showNotification("Ready to play again!")
 }
 
 //method to create the board based on size - needs size, numOfImages, and linkToImages to be populated
@@ -111,7 +115,7 @@ function initBoard(){
 						    '</div>';
 			}
 	   	
-	   		console.log(playingCardsHtml);
+	   		//console.log(playingCardsHtml);
 		}
 		
 		//generate a random number
@@ -123,7 +127,7 @@ function initBoard(){
 					      '<img class="back-face" src="/images/Card1.png" alt="Back Face of Who Am I Card">' +
 					      '</div>'; 
 
-		console.log(chosenCardHtml);
+		//console.log(chosenCardHtml);
 		
 		//find the divs & add the htmlStrings to it 
 	   	document.getElementById("memory-game").innerHTML = playingCardsHtml;
@@ -133,25 +137,16 @@ function initBoard(){
 
 }
 
-function sendLost(){
-    var lost = {
-        win: false
-    };
-    console.log(JSON.stringify(lost));
-    stompClient.send(`${gameTopic}/sendState`, {}, JSON.stringify(lost));
-}
-function sendWin(){
-    var win = {
-        win: true
-    };
-    console.log(JSON.stringify(flagCounter));
-    stompClient.send(`${gameTopic}/sendState`, {}, JSON.stringify(win));
-}
+//determine the id location of the message on the html page
 msgInput = $('#message');
+
+//var to hold different colors for the avatar background
 var colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
 ];
+
+//CREATE GAME FUNCTIONS
 
 //method to set the size of the gameboard 
 function setSize(){
@@ -226,6 +221,7 @@ function setImages() {
 
 }
 
+//method to create the new game room with the user 
 function create(){
 
 	//check if the room id or name variables are empty
@@ -243,13 +239,16 @@ function create(){
     	//hide & show the certain divs
         $("#create3").hide();   
         $("#create4").attr("class","");
-
+	
+		//create the new endpoint
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, onConnected, onError);
         
     }
 }
+
+//method to connect to the determined room 
 function connect(){
 
 	//check if the room id or name variables are empty
@@ -268,32 +267,37 @@ function connect(){
         $("#join1").hide();  
         $("#join2").attr("class","");
 
+		//create the new endpoint
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, onConnected, onError);
     }
 }
+
+//method to initiate the new room once they are connected to the endpoint
 function onConnected() {
     enterRoom($("#room-id").val());
     $(".connecting").hide();
 }
-
+//method to handle the error of not being able to connec to the endpoint
 function onError(error) {
     $(".connecting").css("color","red");
     $(".connecting").text('Could not connect to WebSocket server. Please refresh this page to try again!');
 }
+
+//method to create the board, set the correct endpoints, and set the subscriptions/listeners
 function enterRoom(newRoomId) {
-    initBoard(); //ADD THE BOARD TO THE ROOM 
-    addClick(); 
-	shuffle(); 
+    initBoard(); //add the board to the room
+    addClick(); //add the click function to each card
+	shuffle(); //shuffle the cards
     roomId = newRoomId;
     $("#room-id-display").text(roomId);
     topic = `/app/chat/${newRoomId}`;
     gameTopic = `/app/game/${newRoomId}`;
 
-
+	//check if subscriptions are null
     if (currentSubscription || gameSubscription) {
-
+		//reset the current subscriptions to ensure they are empty 
         currentSubscription.unsubscribe();
         gameSubscription.unsubscribe();
     }
@@ -301,7 +305,8 @@ function enterRoom(newRoomId) {
 	//set passive listeners to these endpoints
     currentSubscription = stompClient.subscribe(`/channel/${roomId}`, onMessageReceived);
     gameSubscription = stompClient.subscribe(`/game/${roomId}`, onGameMessageReceived);
-
+	
+	//sends the new user to the gamecontroller
     stompClient.send(`${topic}/addUser`, {}, JSON.stringify({sender: username, type: 'JOIN'}));
     stompClient.send(`${gameTopic}/joinToTheGame`, {}, JSON.stringify({sender: username, type: 'JOIN'}));
     
@@ -314,6 +319,27 @@ function enterRoom(newRoomId) {
 	
 }
 
+//SEND FUNCTIONS
+
+//method to send the bundle vars to the endpoint
+function sendBundle() {
+	//convert dictionary to list
+	var listOfLinks = [];
+	for (var i = 1; i < numOfImages+1; i++) {
+		listOfLinks.push(linkToImages[i]);
+	}
+
+	//define bundleMessage - basically, sendBundle() will receive this as the bundle POJO
+    var BundleMessage ={
+		size: parseInt(size),
+		numOfImages: parseInt(numOfImages),
+		linkToImages: listOfLinks
+    }
+    console.log(JSON.stringify(BundleMessage));
+
+	//sends the BundleMessage to this url - interfacts with the controller
+    stompClient.send(`${gameTopic}/sendBundle`, {}, JSON.stringify(BundleMessage));
+}
 
 //method to set the player 1 role
 function sendPLAYER1Role() {
@@ -356,40 +382,63 @@ function sendRole(roleToSend) {
     }
 }
 
-//method to send the bundle vars to the endpoint
-function sendBundle() {
-	//convert dictionary to list
-	var listOfLinks = [];
-	for (var i = 1; i < numOfImages+1; i++) {
-		listOfLinks.push(linkToImages[i]);
-	}
+//method to send the player role who is asking the final guess to the endpoint
+function sendFinalGuess() {
+	//console.log("I am inside sendFinalGuess()"); 
+	//check if the role and stomp client is not null
+    if (myRole && stompClient) {
+	finalGuess =""; 
+    
+    	//define the attributes of the final guess 
+        var FinalGuessMessage = {
+			role: myRole 
+        };
+        //console.log("ready to sendFinalGuess() to controller"); 
 
-	//define bundleMessage - basically, sendBundle() will receive this as the bundle POJO
-    var BundleMessage ={
-		size: parseInt(size),
-		numOfImages: parseInt(numOfImages),
-		linkToImages: listOfLinks
+        $("#FINAL-GUESS").hide();
+
+        //send the final game message to the game 
+        stompClient.send(`${gameTopic}/sendFinalGuess`, {}, JSON.stringify(FinalGuessMessage));
     }
-    console.log(JSON.stringify(BundleMessage));
-
-	//sends the BundleMessage to this url - interfacts with the controller
-    stompClient.send(`${gameTopic}/sendBundle`, {}, JSON.stringify(BundleMessage));
 }
 
+//method to send who has won
+function sendWin(theWinner){
+    var win = {
+        winner: theWinner
+    };
+    stompClient.send(`${gameTopic}/sendWin`, {}, JSON.stringify(win));
+}
 
+//method to send user to the create page 
+function sendToCreate(){
+	location.href = "create"; 
+}
+//method to send user to the join page 
+function sendToJoin(){
+	location.href = "join"; 
+}
+
+//MESSAGE FUNCTIONS
+
+//method determine the needed action for the game message received
 function onGameMessageReceived(payload) {
     var gameMessage = JSON.parse(payload.body);
 	
+	//checks if the user's 
 	if(Object.keys(linkToImages).length === 0) {
 		console.log("New player! Let's give you the board!");
 		
 		//console.log(gameMessage.bundle.linkToImages); 
 		
+		//set the bundle vars
 		numOfImages = gameMessage.bundle.numOfImages; 
 		size = gameMessage.bundle.size; 
 		
 		//loop to add the images to a local array 
-		for(i=1;i<numOfImages+1;i++) { 			
+		for(i=1;i<numOfImages+1;i++) { 	
+			
+			//set the linkToImages var	
 			linkToImages[i] = gameMessage.bundle.linkToImages[i-1];  
 			
 			console.log("linkToImages" + i + " " + linkToImages[i]); 
@@ -401,66 +450,112 @@ function onGameMessageReceived(payload) {
 		shuffle();
 		sendBundle(); //Persists the bundle in the endpoint
 	}
+	//check if game is to be restarted
     if(gameMessage.restart){
-        showNotification("RESTART!");
-        restart();
+        //showNotification("RESTART!");
+        //restart();
     }
     if(gameMessage.player1 && player1){
+	
+		//outputs the player 1 role 
         showNotification(gameMessage.player1 + " is Player 1!")
         player1 = false;
 
+		//removes the button from all game rooms
         $( "#PLAYER1" ).hide();
     }
     if(gameMessage.player2 && player2){
+	
+		//outputs the player 2 role 
         showNotification(gameMessage.player2 + " is Player 2!")
+
+		//removes the button from all game rooms
         $( "#PLAYER2" ).hide();
         player2 = false;
     }
-    if(gameMessage.state == 'DEPLOYING'){
-        if(DeployingFirstTime)
+	//check if game is ready to be played
+    if(gameMessage.state == 'PLAYING'){
+        if(startOfGame)
         showNotification(gameMessage.player1 + " is asking first!")
-        DeployingFirstTime=false;
-        currentState = States.DEPLOYING;
-        $("#COMMIT").attr("class","primary inline");
-        $("#COMMIT").prop("disabled",false);
-        $("#COMMIT").show();
-        if(myRole != Roles.PLAYER1)
-            $("#COMMIT").hide();
-        else
-            addListeners();
-        if(gameMessage.flagCounter!=null)
-        $("#licznikFlag").text(gameMessage.flagCounter);
-    }if(gameMessage.state == "LOST" && iknowBro){
+        startOfGame=false;
+        currentState = States.PLAYING;
+        $("#FINAL-GUESS").attr("class","primary inline");
+        $("#FINAL-GUESS").prop("disabled",false);
+        $("#FINAL-GUESS").show();
 
-        iknowBro = false;
+    }//check if player 1 is making a final guess
+    if(gameMessage.state == 'FINALGUESS1'){
+        showNotification(gameMessage.player1 + " is ready to ask their final question!")
+        showNotification(gameMessage.player2 + ", please respond either YES or NO to the question")
+        currentState = States.FINALGUESS1;
+        $("#FINAL-GUESS").hide();
+
+    }//check if player 2 is making a final guess
+    if(gameMessage.state == 'FINALGUESS2'){
+        showNotification(gameMessage.player2 + " is ready to ask their final question!")
+        showNotification(gameMessage.player1 + ", please respond either YES or NO to the question")
+        currentState = States.FINALGUESS2;
+        $("#FINAL-GUESS").hide();
+
+    }//check if player 1 as won 
+	if(gameMessage.state == "WIN1"){
+		//output winner
+        showNotification(gameMessage.player1+": WIN!");
         showNotification(gameMessage.player2+": LOST!");
 
-        $("#licznikFlag").text(gameMessage.flagCounter);
-    }if(gameMessage.state == "WIN" && iknowBro){
+		//add the buttons 
+		/*$("#PLAY-AGAIN").attr("class","primary inline");
+        $("#PLAY-AGAIN").prop("disabled",false);
+        $("#PLAY-AGAIN").show();*/        
+		$("#CREATE-AGAIN").attr("class","primary inline");
+        $("#CREATE-AGAIN").prop("disabled",false);
+        $("#CREATE-AGAIN").show();
+		$("#JOIN-AGAIN").attr("class","primary inline");
+        $("#JOIN-AGAIN").prop("disabled",false);
+        $("#JOIN-AGAIN").show();
 
-        iknowBro = false;
+    }//check if player 2 as won 
+	if(gameMessage.state == "WIN2"){
+		//output winner
+        showNotification(gameMessage.player1+": LOST!");
         showNotification(gameMessage.player2+": WIN!");
-        $("#licznikFlag").text(gameMessage.flagCounter);
+
+		//add the buttons 
+        /*$("#PLAY-AGAIN").attr("class","primary inline");
+        $("#PLAY-AGAIN").prop("disabled",false);
+        $("#PLAY-AGAIN").show();*/
+		$("#CREATE-AGAIN").attr("class","primary inline");
+        $("#CREATE-AGAIN").prop("disabled",false);
+        $("#CREATE-AGAIN").show();
+		$("#JOIN-AGAIN").attr("class","primary inline");
+        $("#JOIN-AGAIN").prop("disabled",false);
+        $("#JOIN-AGAIN").show(); 
     }
-    //if( gameMessage.visibleBoard.fields)setBoardView(gameMessage.visibleBoard.fields);
 }
+
+//method to determine the needed action for the chat message received
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
 
     var messageElement = document.createElement('li');
+
+	//check for message type
     if (message.type == 'JOIN') {
+		//output the new user to join
         messageElement.classList.add('event-message');
         message.content = message.sender + ' joined!';
     } else if (message.type == 'LEAVE') {
+		//output the user who left
         messageElement.classList.add('event-message');
         message.content = message.sender + ' left!';
     } else {
+		//output the user & their message 
         messageElement.classList.add('chat-message');
 
         var avatarElement = document.createElement('i');
         var avatarText = document.createTextNode(message.sender[0]);
         avatarElement.appendChild(avatarText);
-        avatarElement.style['background-color'] = getAvatarColor(message.sender);
+        avatarElement.style['background-color'] = getAvatarColor(message.sender); //gets the avatar color to appear correctly in the other users' messages 
 
         messageElement.appendChild(avatarElement);
 
@@ -470,6 +565,7 @@ function onMessageReceived(payload) {
         messageElement.appendChild(usernameElement);
     }
 
+	//dynamically creates the new message on the page's html & updates the pages 
     var textElement = document.createElement('p');
     var messageText = document.createTextNode(message.content);
     textElement.appendChild(messageText);
@@ -479,6 +575,8 @@ function onMessageReceived(payload) {
     $('#messageArea').append(messageElement);
     $('#messageArea').scrollTop($('#messageArea').prop('scrollHeight'));
 }
+
+//method to dynamically create a notification - used for when users join, leave, get a player role, or win/lose
 function showNotification(notification){
     var messageElement = document.createElement('li');
     messageElement.classList.add('event-message');
@@ -489,28 +587,54 @@ function showNotification(notification){
     $('#messageArea').append(messageElement);
     $('#messageArea').scrollTop($('#messageArea').prop('scrollHeight'));
 }
+
+//method to send the needed message to the same endpoint 
 function sendMessage() {
+	//get the message content & trim white spaces
     var messageContent = $('#message').val().trim();
-    if (messageContent.startsWith('/join ')) {
 
-        var newRoomId = messageContent.substring('/join '.length);
-        if(newRoomId != roomId){
-            restart();
-            clearBoard();
-            enterRoom(newRoomId);
-            $('#messageArea').empty();
-        }
-
-    } else if (messageContent && stompClient) {
+	//check if winner
+		//check if the final answer is YES
+		if (messageContent.startsWith('YES') && currentState && endOfGame == false) {
+			//check if player 1 is asking & player 2 is answering
+			if (currentState == "3" && myRole=="3") { 
+				sendWin("1"); //send that player 1 wins & player 2 loses
+			}
+			//check if player 2 is asking & player 1 is answering
+			else if (currentState == "4" && myRole=="2"){
+				sendWin("2"); //send that player 2 wins & player 1 loses
+			}
+			
+			endOfGame = true; 
+		}
+		//check if the final answer is NO
+		else if (messageContent.startsWith('NO') && currentState && endOfGame == false) {
+			//check if player 1 is asking & player 2 is answering
+			if (currentState == "3"&& myRole=="3") { 
+				sendWin("2"); //send that player 1 loses & player 2 win
+				
+			}
+			//check if player 2 is asking & player 1 is answering
+			else if(currentState == "4"&& myRole=="2"){
+				sendWin("1"); //send that player 2 loses & player 1 win
+			}
+			
+			endOfGame = true; 
+		}
+	//check if message & stompclient is not null 
+    if (messageContent && stompClient) {
         var chatMessage = {
             sender: username,
             content: messageContent,
             type: 'CHAT'
         };
+		//send the complete chat Message - interacts with controller at this point
         stompClient.send(`${topic}/sendMessage`, {}, JSON.stringify(chatMessage));
     }
     $('#message').val( '');
 }
+
+//method to get the color of the avatar so it will show correctly in other users' game chat
 function getAvatarColor(messageSender) {
     var hash = 0;
     for (var i = 0; i < messageSender.length; i++) {
@@ -546,14 +670,14 @@ function flipCard() {
 
 //method to shuffle the cards
 function shuffle() {
-	console.log("EVERYDAY IM SHUFFLING"); 
+	//console.log("EVERYDAY IM SHUFFLING THE CARDS"); 
   	cards.forEach(card => {
-	console.log('shuffle loop');
     let randomPos = Math.floor(Math.random() * numOfImages);
     card.style.order = randomPos;
   })
 }
 
+//set the functions of the certain buttons 
 $(function () {
     $("form").on('submit', function (e) {
         e.preventDefault();
@@ -565,5 +689,8 @@ $(function () {
     $("#send").click(function () {  sendMessage()});
     $( "#PLAYER1" ).click(function() { sendPLAYER1Role(); });
     $("#PLAYER2").click(function () {  sendPLAYER2Role()});
-    $("#RESTART").click(function () { initRestart()});
+    $("#FINAL-GUESS").click(function () { sendFinalGuess()});
+    $("#CREATE-AGAIN").click(function () { sendToCreate()});
+    $("#JOIN-AGAIN").click(function () { sendToJoin()});
+    $("#PLAY-AGAIN").click(function () { playAgain()}); //NOT CURRENTLY IN USE 
 });

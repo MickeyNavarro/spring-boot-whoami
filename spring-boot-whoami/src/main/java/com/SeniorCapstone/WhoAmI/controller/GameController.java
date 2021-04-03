@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.SeniorCapstone.WhoAmI.model.Bundle;
+import com.SeniorCapstone.WhoAmI.model.FinalGuessMessage;
 import com.SeniorCapstone.WhoAmI.model.GameState;
-import com.SeniorCapstone.WhoAmI.model.IfWinMessage;
-import com.SeniorCapstone.WhoAmI.model.Image;
 import com.SeniorCapstone.WhoAmI.model.RestartMessage;
 import com.SeniorCapstone.WhoAmI.model.RoleMessage;
+import com.SeniorCapstone.WhoAmI.model.WinnerMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,28 +40,7 @@ public class GameController {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
-  	
-    @MessageMapping("/game/{roomId}/sendRole")
-    public void sendRole(@DestinationVariable String roomId, @Payload RoleMessage roleMessage) {
-
-        if(!GamesState.containsKey(roomId)){
-            GamesState.put(roomId, new GameState());
-            GameState gameState = GamesState.get(roomId);
-            gameState.setState(GameState.State.WAITING_FOR_PLAYERS);
-        }
-        GameState gameState = GamesState.get(roomId);
-
-        if(roleMessage.getRole().equals(RoleMessage.Role.PLAYER1) && gameState.getPlayer1().isEmpty()){
-            gameState.setPlayer1(roleMessage.getSender());
-        }else if(roleMessage.getRole().equals(RoleMessage.Role.PLAYER2) && gameState.getPlayer2().isEmpty()){
-            gameState.setPlayer2(roleMessage.getSender());
-        }
-
-        if(!gameState.getPlayer2().isEmpty() && !gameState.getPlayer1().isEmpty()){
-            gameState.setState(GameState.State.DEPLOYING);
-        }
-        messagingTemplate.convertAndSend(format("/game/%s", roomId), gameState);
-    }
+    
     @MessageMapping("/game/{roomId}/joinToTheGame")
     public void joinToTheGame(@DestinationVariable String roomId, @Payload RoleMessage roleMessage) {
         if(!GamesState.containsKey(roomId)){
@@ -81,17 +60,54 @@ public class GameController {
         gameState.setBundle(bundle);
         messagingTemplate.convertAndSend(format("/game/%s", roomId), gameState);
     }
+    @MessageMapping("/game/{roomId}/sendRole")
+    public void sendRole(@DestinationVariable String roomId, @Payload RoleMessage roleMessage) {
 
-    @MessageMapping("/game/{roomId}/sendState")
-    public void sendState(@DestinationVariable String roomId, @Payload IfWinMessage ifWinMessage) {
+        if(!GamesState.containsKey(roomId)){
+            GamesState.put(roomId, new GameState());
+            GameState gameState = GamesState.get(roomId);
+            gameState.setState(GameState.State.WAITING_FOR_PLAYERS);
+        }
         GameState gameState = GamesState.get(roomId);
 
+        if(roleMessage.getRole().equals(RoleMessage.Role.PLAYER1) && gameState.getPlayer1().isEmpty()){
+            gameState.setPlayer1(roleMessage.getSender());
+        }else if(roleMessage.getRole().equals(RoleMessage.Role.PLAYER2) && gameState.getPlayer2().isEmpty()){
+            gameState.setPlayer2(roleMessage.getSender());
+        }
 
-        if(ifWinMessage.getWin())
-            gameState.setState(GameState.State.WIN);//tu ustawia to co widzi
-        else gameState.setState(GameState.State.LOST);//tu ustawia to co widzi
+        if(!gameState.getPlayer2().isEmpty() && !gameState.getPlayer1().isEmpty()){
+            gameState.setState(GameState.State.PLAYING);
+        }
         messagingTemplate.convertAndSend(format("/game/%s", roomId), gameState);
     }
+    @MessageMapping("/game/{roomId}/sendFinalGuess")
+    public void sendFinalGuess(@DestinationVariable String roomId, @Payload FinalGuessMessage finalGuessMessage) {
+
+        GameState gameState = GamesState.get(roomId);
+
+        if(finalGuessMessage.getRole().equals("2")){
+            gameState.setState(GameState.State.FINALGUESS1);
+        }else if(finalGuessMessage.getRole().equals("3") ){
+            gameState.setState(GameState.State.FINALGUESS2);
+        }
+
+        messagingTemplate.convertAndSend(format("/game/%s", roomId), gameState);
+    }
+    @MessageMapping("/game/{roomId}/sendWin")
+    public void sendWin(@DestinationVariable String roomId, @Payload WinnerMessage winMessage) {
+
+        GameState gameState = GamesState.get(roomId);
+
+        if(winMessage.getWinner().equals("1")){
+            gameState.setState(GameState.State.WIN1);
+        }else if(winMessage.getWinner().equals("2") ){
+            gameState.setState(GameState.State.WIN2);
+        }
+
+        messagingTemplate.convertAndSend(format("/game/%s", roomId), gameState);
+    }
+
     @MessageMapping("/game/{roomId}/restart")
     public void restart(@DestinationVariable String roomId, @Payload RestartMessage restartMessage ) {
 

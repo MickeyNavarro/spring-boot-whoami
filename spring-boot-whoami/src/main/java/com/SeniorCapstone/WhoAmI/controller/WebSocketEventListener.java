@@ -49,10 +49,10 @@ public class WebSocketEventListener {
      GameState gameState =  GameController.GamesState.get(roomId);
     RestartMessage restartMessage = new RestartMessage();
     restartMessage.setRestart(true);
-    if(gameState.getState() == GameState.State.DEPLOYING &&
+    if(gameState.getState() == GameState.State.PLAYING &&
             gameState.getPlayer1().equals(username) ||
-            ((gameState.getState() == GameState.State.LOST ||
-                    gameState.getState() == GameState.State.WIN)
+            ((gameState.getState() == GameState.State.WIN1 ||
+                    gameState.getState() == GameState.State.WIN2)
                     && gameState.getPlayer2().equals(username)) ||
             ( gameState.getState() == GameState.State.WAITING_FOR_PLAYERS
                     && (gameState.getPlayer1().equals(username) || gameState.getPlayer2().equals(username)))){
