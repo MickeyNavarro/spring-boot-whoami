@@ -1,8 +1,8 @@
-# Who Am I? (Game) by Almicke "Mickey" Navarro 
-##(with the mentoring of Isaiah Discipulo)
+# Who Am I? (Game) by Almicke "Mickey" Navarro (with the mentoring of Isaiah Discipulo)
+* A web-based application that allows players to play a personalized version of "Guess Who?" in a private game room with a chat 
 
 ## Introduction
-* With the COVID-19 pandemic, people spent a majority of their time in quarantine. This brought about loneliness, depression, and lack of social interactions. In order to help this effort, the objective of this project is to create an online game application where players can play a personalized version of Guess Who? while having the ability to chat with the other player. 
+* With the COVID-19 pandemic, people spent a majority of their time in quarantine. This brought about loneliness, depression, and lack of social interactions. In order to help this effort, I decided to create an online game application for my Senior Capstone. Seeing as though there is no current online, personalized "Guess Who?" game, I decided to create one.
 
 ## Requirements
 * Functional Requirements
