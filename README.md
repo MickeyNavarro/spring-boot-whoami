@@ -1,3 +1,4 @@
+<p align="center"><img src="Diagrams/HeaderPhoto.png"/></p>
 # Who Am I? by Almicke Navarro (Mentor: Isaiah Discipulo)
 * A web-based application that allows players to play a personalized version of "Guess Who?" in a private game room with a chat 
 
@@ -6,8 +7,7 @@
 
 ## Requirements
 * Functional Requirements
-  - User can create a new game 
-  - User can 
+  - <p align="center"><img src="Diagrams/FunctionalRequirements.png"/></p>
 * Non-Functional Requirements
   - HTTP/CSS will be used to make the user interface colorful, organized, and user-friendly.
   - Bootstrap will be used to create a responsive user interface.
@@ -31,9 +31,16 @@
 
 ## Technical Design Decisions
 * Logical Flowchart 
+<p align="center"><img src="Diagrams/FunctionalRequirements.png"/></p>
+
 * Sitemap
+<p align="center"><img src="Diagrams/Sitemap.png"/></p>
+
 * User Interface Diagrams
+<p align="center"><img src="Diagrams/Wireframes.png"/></p>
+
 * Class Diagram
+<p align="center"><img src="Diagrams/Logical.png"/></p>
 
 ## Risks & Challenges
 * Risks
@@ -46,6 +53,7 @@
 ## Outstanding Issues
 * Image link inputs accept null or empty inputs 
 * When joining a game, you are able to create a new game room with a new game code. The game page will not output a board game. 
+* Due to not restarting the endpoints, certain game codes with previous connections will fail
 
 ## Potentional Additions
 * Ability to restart game with the previously uploaded photos
