@@ -31,7 +31,7 @@
 
 ## Technical Design Decisions
 * Logical Flowchart 
-<p align="center"><img src="Diagrams/FunctionalRequirements.png"/></p>
+<p align="center"><img src="Diagrams/Logical.png"/></p>
 
 * Sitemap
 <p align="center"><img src="Diagrams/Sitemap.png"/></p>
@@ -40,7 +40,7 @@
 <p align="center"><img src="Diagrams/Wireframes.png"/></p>
 
 * Class Diagram
-<p align="center"><img src="Diagrams/Logical.png"/></p>
+<p align="center"><img src="Diagrams/Class.png"/></p>
 
 ## Risks & Challenges
 * Risks
