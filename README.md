@@ -34,7 +34,13 @@
 
 
 ## Potentional Additions
-
+* Ability to restart game with the previously uploaded photos
+* Ability to link to social media account(s)
+* Ability to store the photos in an account
+* Ability to create/register for an account
+* Ability to access a private room even if the host has left
+* Ability to choose default/pre-made boards
+* Ability to act as a spectator
 
 ## Cloud Computing 
 * Currently, this application is not yet available in the cloud. However, I do plan to deploy it to the Cloud when I fix my outstanding issues and add my potentional additions. With the help of my mentor, Isaiah Discipulo, I believe I will be able to accomplish that. I plan to potentially use either Heroku or Azure as my Cloud Provider because I was fortunate enough to gain experience in these specific Clouds. 
