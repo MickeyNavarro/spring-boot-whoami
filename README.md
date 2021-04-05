@@ -1,4 +1,5 @@
 <p align="center"><img src="Diagrams/HeaderPhoto.png"/></p>
+
 # Who Am I? by Almicke Navarro (Mentor: Isaiah Discipulo)
 * A web-based application that allows players to play a personalized version of "Guess Who?" in a private game room with a chat 
 
